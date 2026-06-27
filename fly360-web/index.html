@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Fly360 — Réservez vols, hôtels et voitures au meilleur prix depuis Douala, Cameroun.">
+  <meta name="keywords" content="voyage, vol, hôtel, voiture, Cameroun, Douala, réservation">
+  <title>Fly360 — Vols, Hôtels et Voitures au Cameroun</title>
+  <link rel="icon" href="images/logo/logo.png">
+  <link rel="stylesheet" href="css/style.css">
+<script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
+  <style>
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to   { transform: translateX(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════ -->
+<header class="header">
+  <div class="container header-inner">
+
+    <!-- LOGO ORIGINAL FLY360 -->
+    <a href="index.html" class="logo">
+      <img src="images/logo/logo.png" alt="Fly360">
+    </a>
+
+    <!-- NAVIGATION -->
+    <nav class="nav">
+      <a href="index.html" class="nav-link active">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        Accueil
+      </a>
+      <a href="flights.html" class="nav-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 2s-4 2-4 2L2.8 6.2l-1.5 1.5 3.5 3.5L-1.9 16.2"/></svg>
+        Vols
+      </a>
+      <a href="hotels.html" class="nav-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+        Hôtels
+      </a>
+      <a href="cars.html" class="nav-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        Voitures
+      </a>
+      <a href="planner.html" class="nav-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Planificateur
+      </a>
+      <a href="contact.html" class="nav-link">Contact</a>
+    </nav>
+
+    <!-- ACTIONS -->
+    <div class="header-actions">
+
+      <!-- Dark mode toggle -->
+      <button class="icon-btn" id="dark-toggle" title="Mode sombre">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+
+      <!-- Notifications -->
+      <button class="icon-btn" title="Notifications" onclick="showToast('3 nouvelles alertes voyage', 'info')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="notif-badge">3</span>
+      </button>
+
+      <!-- Connexion -->
+      <a href="login.html" class="btn-login" id="btn-login">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;margin-right:4px;vertical-align:middle"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        Connexion
+      </a>
+
+      <!-- Inscription -->
+      <a href="register.html" class="btn-signup" id="btn-signup">
+        S'inscrire
+      </a>
+
+      <!-- User menu (shown when logged in) -->
+      <div id="user-menu" style="display:none;align-items:center;gap:10px;">
+        <a href="dashboard.html" style="font-size:13px;font-weight:600;color:var(--gray-600);display:flex;align-items:center;gap:6px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span id="user-name"></span>
+        </a>
+        <button onclick="logout()" class="btn-login" style="background:none;">Déconnexion</button>
+      </div>
+
+      <!-- Burger mobile -->
+      <button class="burger" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  
+</header>
+
+
+<!-- ═══════════════════════════════════════════
+     CAROUSEL 8 SLIDES
+═══════════════════════════════════════════ -->
+<section class="carousel" id="carousel">
+  <div class="slides-track" id="slides-track">
+
+    <!-- SLIDE 1 — PARIS -->
+    <div class="slide">
+      <div class="slide-bg" style="background-image:url('https://images.unsplash.com/photo-1499063078284-f78f7d89616a?w=1200&q=80')"></div>
+      <div class="slide-overlay"></div>
+      <div class="slide-content">
+        <div class="slide-tag">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 2s-4 2-4 2L2.8 6.2l-1.5 1.5 3.5 3.5L-1.9 16.2"/></svg>
+          Offre spéciale · Vol direct
+        </div>
+        <h1 class="slide-title">Volez vers <span>Paris</span><br>au meilleur prix</h1>
+        <p class="slide-desc">Vols directs depuis Douala (DLA) vers Paris (CDG) à partir de 450 000 FCFA. Réservez maintenant !</p>
+        <div class="slide-btns">
+          <a href="flights.html" class="slide-btn-primary">Réserver maintenant</a>
+          <a href="flights.html" class="slide-btn-secondary">Voir tous les vols</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2 — HILTON -->
+    <div class="slide">
+      <div class="slide-bg" style="background-image:url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80')"></div>
+      <div class="slide-overlay"></div>
+      <div class="slide-content">
+        <div class="slide-tag">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          Hôtel du moment · 5 étoiles
+        </div>
+        <h1 class="slide-title">Hilton <span>Yaoundé</span><br>★★★★★</h1>
+        <p class="slide-desc">Nuit à partir de 45 000 FCFA. Petit-déjeuner inclus, piscine, spa et vue panoramique sur la ville.</p>
+        <div class="slide-btns">
+          <a href="hotels.html" class="slide-btn-primary">Voir l'hôtel</a>
+          <a href="hotels.html" class="slide-btn-secondary">Tous les hôtels</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3 — VOITURE -->
+    <div class="slide">
+      <div class="slide-bg" style="background-image:url('https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=1200&q=80')"></div>
+      <div class="slide-overlay"></div>
+      <div class="slide-content">
+        <div class="slide-tag">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/></svg>
+          Location voiture · SUV Premium
+        </div>
+        <h1 class="slide-title">Toyota Prado<br><span>4x4 tout terrain</span></h1>
+        <p class="slide-desc">À partir de 45 000 FCFA par jour. Climatisation, GPS, chauffeur disponible sur demande.</p>
+        <div class="slide-btns">
+          <a href="cars.html" class="slide-btn-primary">Louer maintenant</a>
+          <a href="cars.html" class="slide-btn-secondary">Voir les véhicules</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4 — PLANIFICATEUR -->
+    <div class="slide">
+      <div class="slide-bg" style="background-image:url('https://images.unsplash.com/photo-1488085061387-422e29b40080?w=1200&q=80')"></div>
+      <div class="slide-overlay"></div>
+      <div class="slide-content">
+        <div class="slide-tag">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Nouveau · Planificateur
+        </div>
+        <h1 class="slide-title">Planifiez votre<br><span>voyage complet</span></h1>
+        <p class="slide-desc">Vol + Hôtel + Voiture dans un seul itinéraire. Suivi en temps réel de vos voyageurs.</p>
+        <div class="slide-btns">
+          <a href="planner.html" class="slide-btn-primary">Créer un itinéraire</a>
+          <a href="planner.html" class="slide-btn-secondary">En savoir plus</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5 — DUBAI -->
+    <div class="slide">
+      <div class="slide-bg" style="background-image:url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200&q=80')"></div>
+      <div class="slide-overlay"></div>
+      <div class="slide-content">
+        <div class="slide-tag">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+          Alerte prix · Dubai
+        </div>
+        <h1 class="slide-title">Prix en baisse<br><span>vers Dubai !</span></h1>
+        <p class="slide-desc">Économisez jusqu'à 30% sur vos vols vers Dubai cette semaine. Offre limitée !</p>
+        <div class="slide-btns">
+          <a href="flights.html" class="slide-btn-primary">Profiter de l'offre</a>
+          <a href="flights.html" class="slide-btn-secondary">Voir plus</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6 — QR CODE SECURITE -->
+    <div class="slide">
+      <div class="slide-bg" style="background-image:url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=1200&q=80')"></div>
+      <div class="slide-overlay"></div>
+      <div class="slide-content">
+        <div class="slide-tag">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Sécurité · QR Code
+        </div>
+        <h1 class="slide-title">Paiement<br><span>100% sécurisé</span></h1>
+        <p class="slide-desc">Double vérification QR Code par email et SMS. Vos données et paiements sont protégés.</p>
+        <div class="slide-btns">
+          <a href="register.html" class="slide-btn-primary">Réserver sécurisé</a>
+          <a href="contact.html" class="slide-btn-secondary">Comment ça marche</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7 — SUIVI VOYAGEUR -->
+    <div class="slide">
+      <div class="slide-bg" style="background-image:url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1200&q=80')"></div>
+      <div class="slide-overlay"></div>
+      <div class="slide-content">
+        <div class="slide-tag">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          Suivi · Temps réel
+        </div>
+        <h1 class="slide-title">On vous suit<br><span>partout dans le monde</span></h1>
+        <p class="slide-desc">Alertes en temps réel pendant votre voyage. Votre sécurité est notre priorité absolue.</p>
+        <div class="slide-btns">
+          <a href="planner.html" class="slide-btn-primary">Activer le suivi</a>
+          <a href="contact.html" class="slide-btn-secondary">En savoir plus</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8 — DESTINATIONS -->
+    <div class="slide">
+      <div class="slide-bg" style="background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80')"></div>
+      <div class="slide-overlay"></div>
+      <div class="slide-content">
+        <div class="slide-tag">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"/></svg>
+          500+ Destinations
+        </div>
+        <h1 class="slide-title">500+ destinations<br><span>dans le monde</span></h1>
+        <p class="slide-desc">Cameroun, Afrique, Europe, Amérique, Asie. Réservez votre aventure maintenant.</p>
+        <div class="slide-btns">
+          <a href="flights.html" class="slide-btn-primary">Explorer</a>
+          <a href="hotels.html" class="slide-btn-secondary">Voir les hôtels</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Navigation arrows -->
+  <button class="carousel-prev" onclick="goToSlide((currentSlide - 1 + 8) % 8)">&#8249;</button>
+  <button class="carousel-next" onclick="goToSlide((currentSlide + 1) % 8)">&#8250;</button>
+
+  <!-- Dots -->
+  <div class="carousel-dots" id="carousel-dots"></div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     SEARCH BOX
+═══════════════════════════════════════════ -->
+<div class="search-wrap">
+  <div class="search-box">
+    <!-- Tabs -->
+    <div class="search-tabs">
+      <button class="tab-btn active" onclick="setTab(this, 'vols')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 2s-4 2-4 2L2.8 6.2l-1.5 1.5 3.5 3.5L-1.9 16.2"/></svg>
+        Vols
+      </button>
+      <button class="tab-btn" onclick="setTab(this, 'hotels')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        Hôtels
+      </button>
+      <button class="tab-btn" onclick="setTab(this, 'cars')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/></svg>
+        Voitures
+      </button>
+      <button class="tab-btn" onclick="setTab(this, 'planner')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Planifier
+      </button>
+      <button class="tab-btn" onclick="setTab(this, 'combined')">✨ Combiné</button>
+    </div>
+
+    <!-- Vols fields -->
+    <div class="search-fields" id="search-vols">
+      <div class="search-field">
+        <label>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"/></svg>
+          Départ
+        </label>
+        <input type="text" class="search-input" value="Douala, Cameroun (DLA)" placeholder="Ville ou aéroport">
+      </div>
+      <div class="search-field">
+        <label>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"/></svg>
+          Destination
+        </label>
+        <input type="text" class="search-input" placeholder="Où allez-vous ?">
+      </div>
+      <div class="search-field">
+        <label>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Dates
+        </label>
+        <input type="date" class="search-input">
+      </div>
+      <div class="search-field">
+        <label>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          Voyageurs
+        </label>
+        <input type="text" class="search-input" value="1 adulte, Économique">
+      </div>
+      <button class="search-btn" onclick="window.location.href='flights.html'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Rechercher
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     ALERT BAR
+═══════════════════════════════════════════ -->
+<div class="alert-bar container" style="border-radius:0;max-width:100%;padding-left:24px;padding-right:24px;">
+  <div class="alert-label">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    Alertes voyage
+  </div>
+  <div class="alert-pills">
+    <div class="alert-pill">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2 16 11l3.5-3.5"/></svg>
+      Paris dans 5 jours
+    </div>
+    <div class="alert-pill red">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+      Réservation expire dans 2j
+    </div>
+    <div class="alert-pill">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11"/></svg>
+      Check-in Hilton demain
+    </div>
+    <div class="alert-pill red">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+      Mercure complet — Alternatives
+    </div>
+    <div class="alert-pill green">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+      Prix baissé vers Dubai !
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION HÔTELS
+═══════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-tag">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          Nos hôtels
+        </div>
+        <h2 class="section-title">20 hôtels sélectionnés pour vous</h2>
+        <p class="section-sub">Établissements vérifiés au Cameroun et dans le monde entier</p>
+      </div>
+      <a href="hotels.html" class="see-all">
+        Voir tous les hôtels
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <div class="hotels-grid" id="hotels-home"></div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION VOLS
+═══════════════════════════════════════════ -->
+<section class="section" style="padding-top:8px">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-tag">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 2s-4 2-4 2L2.8 6.2l-1.5 1.5 3.5 3.5L-1.9 16.2"/></svg>
+          Vols populaires
+        </div>
+        <h2 class="section-title">Depuis Douala (DLA)</h2>
+      </div>
+      <a href="flights.html" class="see-all">
+        Tous les vols
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <!-- Vol 1 -->
+    <div class="flight-card" onclick="window.location.href='flights.html'">
+      <div class="airline-info">
+        <div class="airline-logo" style="background:#FFF7ED">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 2s-4 2-4 2L2.8 6.2l-1.5 1.5 3.5 3.5L-1.9 16.2"/></svg>
+        </div>
+        <div>
+          <div class="airline-name">Camair-Co</div>
+          <div class="airline-num">QC 101</div>
+        </div>
+      </div>
+      <div class="flight-time"><div class="ft">08:30</div><div class="fc">DLA</div></div>
+      <div class="flight-line">
+        <div class="fl-dur">6h 15m</div>
+        <div class="fl-bar"><div class="fl-dot" style="background:#22C55E"></div></div>
+        <div class="fl-stop" style="color:#22C55E">Direct</div>
+      </div>
+      <div class="flight-time"><div class="ft">14:45</div><div class="fc">CDG</div></div>
+      <div class="flight-price">450 000<small>FCFA / pers.</small></div>
+      <button class="flight-btn">Sélectionner</button>
+    </div>
+
+    <!-- Vol 2 -->
+    <div class="flight-card" onclick="window.location.href='flights.html'">
+      <div class="airline-info">
+        <div class="airline-logo" style="background:#EFF6FF">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 2s-4 2-4 2L2.8 6.2l-1.5 1.5 3.5 3.5L-1.9 16.2"/></svg>
+        </div>
+        <div>
+          <div class="airline-name">Air France</div>
+          <div class="airline-num">AF 1234</div>
+        </div>
+      </div>
+      <div class="flight-time"><div class="ft">10:15</div><div class="fc">DLA</div></div>
+      <div class="flight-line">
+        <div class="fl-dur">9h 05m</div>
+        <div class="fl-bar"><div class="fl-dot" style="background:#F59E0B"></div></div>
+        <div class="fl-stop" style="color:#F59E0B">1 escale</div>
+      </div>
+      <div class="flight-time"><div class="ft">19:20</div><div class="fc">CDG</div></div>
+      <div class="flight-price">380 000<small>FCFA / pers.</small></div>
+      <button class="flight-btn">Sélectionner</button>
+    </div>
+
+    <!-- Vol 3 -->
+    <div class="flight-card" onclick="window.location.href='flights.html'">
+      <div class="airline-info">
+        <div class="airline-logo" style="background:#F0FDF4">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 2s-4 2-4 2L2.8 6.2l-1.5 1.5 3.5 3.5L-1.9 16.2"/></svg>
+        </div>
+        <div>
+          <div class="airline-name">Ethiopian Airlines</div>
+          <div class="airline-num">ET 901</div>
+        </div>
+      </div>
+      <div class="flight-time"><div class="ft">23:45</div><div class="fc">DLA</div></div>
+      <div class="flight-line">
+        <div class="fl-dur">8h 30m</div>
+        <div class="fl-bar"><div class="fl-dot" style="background:#22C55E"></div></div>
+        <div class="fl-stop" style="color:#22C55E">Direct</div>
+      </div>
+      <div class="flight-time"><div class="ft">08:15</div><div class="fc">DXB</div></div>
+      <div class="flight-price">320 000<small>FCFA / pers.</small></div>
+      <button class="flight-btn">Sélectionner</button>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     SECTION VOITURES
+═══════════════════════════════════════════ -->
+<section class="section" style="padding-top:8px">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-tag">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/></svg>
+          Location de voitures
+        </div>
+        <h2 class="section-title">15 types de véhicules disponibles</h2>
+        <p class="section-sub">Économique, SUV, Luxe et Van — pour tous vos besoins</p>
+      </div>
+      <a href="cars.html" class="see-all">
+        Voir tous les véhicules
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <div class="cars-grid" id="cars-home"></div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     PLANIFICATEUR SECTION
+═══════════════════════════════════════════ -->
+<section class="planner-section">
+  <div class="container">
+    <div class="planner-grid">
+      <div>
+        <div class="planner-tag">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          Nouveauté · Planificateur
+        </div>
+        <h2 class="planner-title">Planifiez votre<br><span>voyage complet</span></h2>
+        <p class="planner-desc">Centralisez vols, hôtels et voitures dans un seul itinéraire interactif. Suivi de vos voyageurs en temps réel avec alertes intelligentes.</p>
+
+        <div class="planner-feat">
+          <div class="planner-feat-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          </div>
+          <div class="planner-feat-text"><strong>Itinéraire jour par jour</strong> — organisez chaque étape de votre voyage avec vol, hôtel et voiture.</div>
+        </div>
+        <div class="planner-feat">
+          <div class="planner-feat-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          <div class="planner-feat-text"><strong>Suivi en temps réel</strong> — sachez où en est votre voyageur à chaque instant.</div>
+        </div>
+        <div class="planner-feat">
+          <div class="planner-feat-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+          </div>
+          <div class="planner-feat-text"><strong>Alertes intelligentes</strong> — notifié X jours avant le voyage, si hôtel complet, si prix baisse.</div>
+        </div>
+
+        <a href="planner.html" style="display:inline-flex;align-items:center;gap:8px;background:#F97316;color:white;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:700;margin-top:8px;transition:all 0.2s;">
+          Créer un itinéraire
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="planner-card">
+        <div class="planner-trip-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2.5"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"/></svg>
+          Voyage Douala — Paris · 15-22 Août 2025
+        </div>
+
+        <div class="plan-day">
+          <div class="plan-day-num">1</div>
+          <div>
+            <div class="plan-day-title">Jour 1 — Départ Douala</div>
+            <div class="plan-item">
+              <div class="plan-item-icon">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2.5"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 2s-4 2-4 2L2.8 6.2l-1.5 1.5 3.5 3.5L-1.9 16.2"/></svg>
+              </div>
+              <div>
+                <div class="plan-item-text">Vol Camair-Co QC101 — DLA → CDG</div>
+                <div class="plan-item-ref">08:30 — 14:45 · Billet #FLY-84729</div>
+              </div>
+            </div>
+            <div class="plan-item">
+              <div class="plan-item-icon">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              </div>
+              <div>
+                <div class="plan-item-text">Check-in Hilton Yaoundé</div>
+                <div class="plan-item-ref">À partir de 15:00 · Chambre Deluxe</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="plan-day">
+          <div class="plan-day-num">2</div>
+          <div>
+            <div class="plan-day-title">Jour 2 — Exploration</div>
+            <div class="plan-item">
+              <div class="plan-item-icon">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/></svg>
+              </div>
+              <div>
+                <div class="plan-item-text">Toyota Prado — Prise en charge aéroport</div>
+                <div class="plan-item-ref">09:00 · Hertz Douala</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="plan-day">
+          <div class="plan-day-num">3</div>
+          <div>
+            <div class="plan-day-title">Statut voyageur</div>
+            <div class="plan-item">
+              <div class="plan-item-icon">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div>
+                <div class="plan-item-text" style="color:#22C55E">Voyageur arrivé à destination ✓</div>
+                <div class="plan-item-ref">Confirmation reçue le 15 Août à 15:32</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     PARTENAIRES
+═══════════════════════════════════════════ -->
+<div class="partners-bar">
+  <div class="container" style="display:flex;align-items:center;gap:20px;width:100%">
+    <span class="partners-label">Partenaires officiels</span>
+    <div class="partners-list">
+      <span class="partner-item">✈ Camair-Co</span>
+      <span class="partner-item">✈ Air France</span>
+      <span class="partner-item">🏨 Hilton Hotels</span>
+      <span class="partner-item">🚗 Hertz</span>
+      <span class="partner-item">🚗 Avis</span>
+      <span class="partner-item">💳 Stripe</span>
+      <span class="partner-item">🗺 Google Maps</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+
+      <!-- Brand -->
+      <div class="footer-brand">
+        <img src="images/logo/logo.png" alt="Fly360" class="footer-logo">
+        <p>Votre plateforme complète de réservation et planification de voyages. Vols, hôtels et voitures au meilleur prix depuis Douala, Cameroun.</p>
+        <div class="footer-social">
+          <a href="#" title="Facebook">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+          <a href="#" title="Twitter">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+          </a>
+          <a href="#" title="Instagram">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="#" title="YouTube">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Services -->
+      <div>
+        <h5>Services</h5>
+        <div class="footer-links">
+          <a href="flights.html">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2 16 11l3.5-3.5"/></svg>
+            Recherche de vols
+          </a>
+          <a href="hotels.html">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2 16 11l3.5-3.5"/></svg>
+            Réservation hôtels
+          </a>
+          <a href="cars.html">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2 16 11l3.5-3.5"/></svg>
+            Location voitures
+          </a>
+          <a href="planner.html">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2 16 11l3.5-3.5"/></svg>
+            Planificateur voyage
+          </a>
+          <a href="planner.html">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2 16 11l3.5-3.5"/></svg>
+            Suivi voyageur
+          </a>
+        </div>
+      </div>
+
+      <!-- Compte -->
+      <div>
+        <h5>Mon compte</h5>
+        <div class="footer-links">
+          <a href="login.html">Se connecter</a>
+          <a href="register.html">Créer un compte</a>
+          <a href="dashboard.html">Mon dashboard</a>
+          <a href="dashboard.html">Mes réservations</a>
+          <a href="planner.html">Mes voyages</a>
+        </div>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h5>Contact & Aide</h5>
+        <div class="footer-contact-item">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          contact@fly360.cm
+        </div>
+        <div class="footer-contact-item">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9a16 16 0 0 0 6 6l1.27-.85a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          +237 600 000 000
+        </div>
+        <div class="footer-contact-item">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"/></svg>
+          Douala, Cameroun
+        </div>
+        <div class="footer-contact-item" style="color:#22C55E">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Support 24h/24 — 7j/7
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="footer-bottom">
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;width:100%">
+      <span>© 2025 Fly360. Tous droits réservés.</span>
+      <div class="footer-bottom-links">
+        <a href="#">Confidentialité</a>
+        <a href="#">Conditions</a>
+        <a href="#">Cookies</a>
+        <span style="color:var(--gray-600);display:flex;align-items:center;gap:5px">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Paiement sécurisé — Stripe & QR Code
+        </span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ═══════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════ -->
+<script src="data/hotels.js"></script>
+<script src="data/cars.js"></script>
+<script src="js/main.js"></script>
+<script>
+// Afficher 4 hôtels sur la page d'accueil
+function renderHomeHotels() {
+  const container = document.getElementById('hotels-home')
+  if (!container) return
+  const featured = hotels.slice(0, 4)
+  container.innerHTML = featured.map(h => `
+    <div class="hotel-card" onclick="window.location.href='hotels.html#${h.id}'">
+      <div class="hotel-img" style="background-image:url('${h.image}')">
+        <div class="hotel-badges">
+          <span class="badge badge-cat">${h.category}</span>
+          <span class="badge ${h.available ? 'badge-ok' : 'badge-no'}">${h.available ? 'Disponible' : 'Complet'}</span>
+        </div>
+      </div>
+      <div class="hotel-body">
+        <div class="hotel-name">${h.name}</div>
+        <div class="hotel-loc">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"/></svg>
+          ${h.city}, ${h.country}
+        </div>
+        <div class="hotel-stars">${'★'.repeat(h.stars)}${'☆'.repeat(5-h.stars)}</div>
+        <div class="hotel-footer">
+          <div class="hotel-price">${h.price.toLocaleString('fr-FR')} FCFA<small>/nuit</small></div>
+          <button class="hotel-btn ${h.available ? '' : 'alt'}">${h.available ? 'Voir détails' : 'Alternatives'}</button>
+        </div>
+      </div>
+    </div>
+  `).join('')
+}
+
+// Afficher 3 voitures sur la page d'accueil
+function renderHomeCars() {
+  const container = document.getElementById('cars-home')
+  if (!container) return
+  const featured = cars.filter(c => c.available).slice(0, 3)
+  container.innerHTML = featured.map(c => `
+    <div class="car-card" onclick="window.location.href='cars.html#${c.id}'">
+      <div class="car-img" style="background-image:url('${c.image}')">
+        <span class="car-cat-badge">${c.category}</span>
+      </div>
+      <div class="car-body">
+        <div class="car-name">${c.name}</div>
+        <div class="car-company">${c.company}</div>
+        <div class="car-features">
+          <span class="car-feat">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            ${c.seats} places
+          </span>
+          <span class="car-feat">${c.transmission}</span>
+          <span class="car-feat">${c.fuel}</span>
+        </div>
+        <div class="car-footer">
+          <div class="car-price">${c.pricePerDay.toLocaleString('fr-FR')} FCFA<small>/jour</small></div>
+          <button class="car-btn">Réserver</button>
+        </div>
+      </div>
+    </div>
+  `).join('')
+}
+
+function setTab(btn, type) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'))
+  btn.classList.add('active')
+  if (type === 'hotels') window.location.href = 'hotels.html'
+  else if (type === 'cars') window.location.href = 'cars.html'
+  else if (type === 'planner') window.location.href = 'planner.html'
+}
+
+function toggleMobileMenu() {
+  document.getElementById('mobile-menu').classList.toggle('hidden')
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderHomeHotels()
+  renderHomeCars()
+})
+</script>
+
+</body>
+</html>

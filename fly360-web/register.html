@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S'inscrire — Fly360</title>
+  <link rel="icon" href="images/logo/logo.png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/shared.css">
+  <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
+  <style>
+    body { background: var(--gray-50); }
+    body.dark { background: var(--black); }
+    .auth-main { min-height: calc(100vh - 70px); display: grid; grid-template-columns: 1fr 1fr; }
+    .auth-visual {
+      background: linear-gradient(135deg,#0f172a,#1e3a5f,#0f4c3a);
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: flex-end; padding: 48px;
+    }
+    .auth-visual-bg { position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1000&q=80');background-size:cover;background-position:center;opacity:.25; }
+    .auth-visual-content { position: relative; z-index: 2; }
+    .auth-logo { margin-bottom: 48px; }
+    .auth-logo img { height: 50px; filter: brightness(0) invert(1); }
+    .auth-tagline { font-size: 34px; font-weight: 800; color: white; line-height: 1.2; margin-bottom: 16px; }
+    .auth-tagline span { color: var(--orange); }
+    .auth-desc { font-size: 14px; color: rgba(255,255,255,.7); line-height: 1.7; margin-bottom: 32px; }
+    .benefits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .benefit { background: rgba(255,255,255,.08); border-radius: 12px; padding: 14px; }
+    .benefit-ico { font-size: 24px; margin-bottom: 8px; }
+    .benefit-title { font-size: 13px; font-weight: 700; color: white; margin-bottom: 4px; }
+    .benefit-desc { font-size: 11px; color: rgba(255,255,255,.6); line-height: 1.5; }
+    .auth-form-side {
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 40px; background: white; overflow-y: auto;
+    }
+    body.dark .auth-form-side { background: #1e293b; }
+    .auth-form-wrap { width: 100%; max-width: 440px; padding: 8px 0; }
+    .auth-tabs { display:flex;background:var(--gray-50);border-radius:12px;padding:4px;margin-bottom:28px; }
+    body.dark .auth-tabs { background: #0f172a; }
+    .auth-tab { flex:1;padding:10px;border-radius:10px;font-size:14px;font-weight:600;color:var(--gray-500);cursor:pointer;transition:all .2s;text-align:center;text-decoration:none;display:block; }
+    .auth-tab.active { background:white;color:var(--gray-900);box-shadow:0 2px 8px rgba(0,0,0,.08); }
+    body.dark .auth-tab.active { background:#334155;color:white; }
+    .auth-form-title { font-size:24px;font-weight:800;color:var(--gray-900);margin-bottom:6px; }
+    body.dark .auth-form-title { color:#f1f5f9; }
+    .auth-form-sub { font-size:13px;color:var(--gray-500);margin-bottom:24px; }
+    .field { display:flex;flex-direction:column;gap:5px;margin-bottom:14px; }
+    .field label { display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--gray-600);text-transform:uppercase;letter-spacing:.06em; }
+    body.dark .field label { color:#94a3b8; }
+    .field-wrap { display:flex;align-items:center;border:1.5px solid var(--gray-200);border-radius:10px;overflow:hidden;transition:border-color .2s; }
+    .field-wrap:focus-within { border-color:var(--orange);box-shadow:0 0 0 3px rgba(249,115,22,.08); }
+    body.dark .field-wrap { border-color:#334155; }
+    .field-ico { width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--gray-400);background:var(--gray-50);flex-shrink:0; }
+    body.dark .field-ico { background:#0f172a; }
+    .field-wrap input,.field-wrap select { flex:1;padding:12px 14px 12px 0;border:none;font-size:13px;color:var(--gray-800);background:transparent;outline:none; }
+    body.dark .field-wrap input,body.dark .field-wrap select { color:#e2e8f0; }
+    .field-wrap input::placeholder { color:var(--gray-400); }
+    .field-action { width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--gray-400);cursor:pointer;transition:color .2s;flex-shrink:0;background:none;border:none; }
+    .field-action:hover { color:var(--orange); }
+    .pwd-strength { margin-top:6px; }
+    .pwd-bar { height: 4px; border-radius: 2px; background: var(--gray-200); overflow: hidden; }
+    .pwd-fill { height: 100%; border-radius: 2px; transition: all .3s; width: 0; }
+    .pwd-label { font-size: 11px; color: var(--gray-400); margin-top: 4px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .terms-check { display:flex;align-items:flex-start;gap:10px;margin-bottom:20px; }
+    .terms-check input { accent-color:var(--orange);margin-top:3px;flex-shrink:0;cursor:pointer; }
+    .terms-check span { font-size:12px;color:var(--gray-500);line-height:1.6; }
+    .terms-check a { color:var(--orange);font-weight:600; }
+    .submit-btn { display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--orange);color:white;padding:14px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:all .2s;margin-bottom:20px; }
+    .submit-btn:hover { background:var(--orange-dark);transform:translateY(-1px);box-shadow:0 6px 20px rgba(249,115,22,.3); }
+    .divider { display:flex;align-items:center;gap:12px;font-size:12px;color:var(--gray-400);margin-bottom:20px; }
+    .divider::before,.divider::after { content:'';flex:1;height:1px;background:var(--gray-200); }
+    body.dark .divider::before,body.dark .divider::after { background:#334155; }
+    .social-btns { display:flex;gap:10px;margin-bottom:24px; }
+    .social-btn { flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;border:1.5px solid var(--gray-200);border-radius:10px;font-size:13px;font-weight:600;color:var(--gray-700);cursor:pointer;transition:all .2s;background:white; }
+    body.dark .social-btn { background:#0f172a;border-color:#334155;color:#e2e8f0; }
+    .social-btn:hover { border-color:var(--orange);color:var(--orange);transform:translateY(-1px); }
+    .auth-switch { text-align:center;font-size:13px;color:var(--gray-500); }
+    .auth-switch a { color:var(--orange);font-weight:700;text-decoration:none; }
+    .error-msg { background:var(--red-light);border:1px solid var(--red);color:var(--red-dark);font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:16px;display:none;align-items:center;gap:8px; }
+    .error-msg.show { display:flex; }
+    .success-msg { background:var(--green-light);border:1px solid var(--green);color:var(--green-dark);font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:16px;display:none;align-items:center;gap:8px; }
+    .success-msg.show { display:flex; }
+    @media(max-width:768px) { .auth-main{grid-template-columns:1fr} .auth-visual{display:none} .auth-form-side{padding:24px} }
+  </style>
+</head>
+<body>
+
+<header class="header" id="header">
+  <div class="header-inner container">
+    <a href="index.html" class="logo"><img src="images/logo/logo.png" alt="Fly360"></a>
+    <nav class="nav">
+      <a href="index.html" class="nav-link"><iconify-icon icon="solar:home-2-bold-duotone"></iconify-icon>Accueil</a>
+      <a href="flights.html" class="nav-link"><iconify-icon icon="solar:airplane-bold-duotone"></iconify-icon>Vols</a>
+      <a href="hotels.html" class="nav-link"><iconify-icon icon="solar:buildings-bold-duotone"></iconify-icon>Hôtels</a>
+      <a href="cars.html" class="nav-link"><iconify-icon icon="solar:car-bold-duotone"></iconify-icon>Voitures</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="dark-toggle"><iconify-icon icon="solar:moon-bold-duotone" id="dark-icon"></iconify-icon></button>
+      <a href="login.html" class="btn-login"><iconify-icon icon="solar:login-bold-duotone"></iconify-icon>Connexion</a>
+    </div>
+  </div>
+</header>
+
+<main class="auth-main">
+  <!-- GAUCHE -->
+  <div class="auth-visual">
+    <div class="auth-visual-bg"></div>
+    <div class="auth-visual-content">
+      <div class="auth-logo"><img src="images/logo/logo.png" alt="Fly360"></div>
+      <div class="auth-tagline">Votre prochain voyage<br>commence <span>ici</span></div>
+      <div class="auth-desc">Rejoignez 20 000+ voyageurs qui font confiance à Fly360 pour planifier et réserver leurs voyages depuis le Cameroun.</div>
+      <div class="benefits-grid">
+        <div class="benefit">
+          <div class="benefit-ico">✈️</div>
+          <div class="benefit-title">Prix garantis</div>
+          <div class="benefit-desc">Le prix le plus bas — remboursé sinon</div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-ico">📍</div>
+          <div class="benefit-title">Suivi voyageur</div>
+          <div class="benefit-desc">Alertes temps réel à chaque étape</div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-ico">🔐</div>
+          <div class="benefit-title">QR Code 2FA</div>
+          <div class="benefit-desc">Double vérification sur chaque paiement</div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-ico">⭐</div>
+          <div class="benefit-title">Points fidélité</div>
+          <div class="benefit-desc">1 000 pts = 5 000 FCFA de remise</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DROITE -->
+  <div class="auth-form-side">
+    <div class="auth-form-wrap">
+      <div class="auth-tabs">
+        <a href="login.html" class="auth-tab">Se connecter</a>
+        <a href="register.html" class="auth-tab active">S'inscrire</a>
+      </div>
+
+      <div class="auth-form-title">Créer un compte gratuit</div>
+      <div class="auth-form-sub">Remplissez les informations ci-dessous pour commencer à voyager.</div>
+
+      <div class="error-msg" id="error-msg">
+        <iconify-icon icon="solar:danger-triangle-bold-duotone" style="font-size:18px;flex-shrink:0"></iconify-icon>
+        <span id="error-text">Veuillez corriger les erreurs.</span>
+      </div>
+      <div class="success-msg" id="success-msg">
+        <iconify-icon icon="solar:check-circle-bold-duotone" style="font-size:18px;flex-shrink:0"></iconify-icon>
+        <span>Compte créé ! Redirection vers votre dashboard...</span>
+      </div>
+
+      <form onsubmit="handleRegister(event)" novalidate>
+        <div class="form-row">
+          <div class="field">
+            <label><iconify-icon icon="solar:user-bold-duotone"></iconify-icon>Prénom *</label>
+            <div class="field-wrap">
+              <div class="field-ico"><iconify-icon icon="solar:user-bold-duotone"></iconify-icon></div>
+              <input type="text" id="fname" placeholder="Jean" required autocomplete="given-name">
+            </div>
+          </div>
+          <div class="field">
+            <label><iconify-icon icon="solar:user-bold-duotone"></iconify-icon>Nom *</label>
+            <div class="field-wrap">
+              <div class="field-ico"><iconify-icon icon="solar:user-bold-duotone"></iconify-icon></div>
+              <input type="text" id="lname" placeholder="Dupont" required autocomplete="family-name">
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label><iconify-icon icon="solar:letter-bold-duotone"></iconify-icon>Email *</label>
+          <div class="field-wrap">
+            <div class="field-ico"><iconify-icon icon="solar:letter-bold-duotone"></iconify-icon></div>
+            <input type="email" id="email" placeholder="jean@email.com" required autocomplete="email">
+          </div>
+        </div>
+
+        <div class="field">
+          <label><iconify-icon icon="solar:phone-bold-duotone"></iconify-icon>Téléphone</label>
+          <div class="field-wrap">
+            <div class="field-ico"><iconify-icon icon="solar:phone-bold-duotone"></iconify-icon></div>
+            <input type="tel" id="phone" placeholder="+237 6XX XXX XXX" autocomplete="tel">
+          </div>
+        </div>
+
+        <div class="field">
+          <label><iconify-icon icon="solar:lock-password-bold-duotone"></iconify-icon>Mot de passe *</label>
+          <div class="field-wrap">
+            <div class="field-ico"><iconify-icon icon="solar:lock-password-bold-duotone"></iconify-icon></div>
+            <input type="password" id="password" placeholder="Minimum 8 caractères" required oninput="checkStrength(this.value)" autocomplete="new-password">
+            <button type="button" class="field-action" onclick="togglePwd('password','eye1')" aria-label="Voir le mot de passe">
+              <iconify-icon icon="solar:eye-bold-duotone" id="eye1"></iconify-icon>
+            </button>
+          </div>
+          <div class="pwd-strength">
+            <div class="pwd-bar"><div class="pwd-fill" id="pwd-fill"></div></div>
+            <div class="pwd-label" id="pwd-label">Entrez un mot de passe</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label><iconify-icon icon="solar:lock-password-bold-duotone"></iconify-icon>Confirmer le mot de passe *</label>
+          <div class="field-wrap">
+            <div class="field-ico"><iconify-icon icon="solar:lock-password-bold-duotone"></iconify-icon></div>
+            <input type="password" id="confirm-pwd" placeholder="Répétez le mot de passe" required autocomplete="new-password">
+            <button type="button" class="field-action" onclick="togglePwd('confirm-pwd','eye2')" aria-label="Voir le mot de passe">
+              <iconify-icon icon="solar:eye-bold-duotone" id="eye2"></iconify-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label><iconify-icon icon="solar:map-point-bold-duotone"></iconify-icon>Pays de résidence</label>
+          <div class="field-wrap">
+            <div class="field-ico"><iconify-icon icon="solar:map-point-bold-duotone"></iconify-icon></div>
+            <select id="country" style="cursor:pointer">
+              <option value="CM" selected>🇨🇲 Cameroun</option>
+              <option value="FR">🇫🇷 France</option>
+              <option value="BE">🇧🇪 Belgique</option>
+              <option value="CH">🇨🇭 Suisse</option>
+              <option value="CI">🇨🇮 Côte d'Ivoire</option>
+              <option value="SN">🇸🇳 Sénégal</option>
+              <option value="GA">🇬🇦 Gabon</option>
+              <option value="CD">🇨🇩 RD Congo</option>
+              <option value="NG">🇳🇬 Nigeria</option>
+              <option value="GH">🇬🇭 Ghana</option>
+              <option value="KE">🇰🇪 Kenya</option>
+              <option value="AE">🇦🇪 Émirats Arabes Unis</option>
+              <option value="US">🇺🇸 États-Unis</option>
+              <option value="CA">🇨🇦 Canada</option>
+            </select>
+          </div>
+        </div>
+
+        <label class="terms-check">
+          <input type="checkbox" id="terms" required>
+          <span>J'accepte les <a href="#">Conditions Générales d'Utilisation</a> et la <a href="#">Politique de Confidentialité</a> de Fly360.</span>
+        </label>
+
+        <label class="terms-check">
+          <input type="checkbox" id="newsletter">
+          <span>Je souhaite recevoir les offres exclusives et alertes prix de Fly360 (optionnel)</span>
+        </label>
+
+        <button type="submit" class="submit-btn" id="register-btn">
+          <iconify-icon icon="solar:user-plus-bold-duotone"></iconify-icon>
+          Créer mon compte gratuit
+        </button>
+      </form>
+
+      <div class="divider">Ou continuer avec</div>
+      <div class="social-btns">
+        <button class="social-btn" onclick="socialRegister('Google')">
+          <iconify-icon icon="flat-color-icons:google" style="font-size:20px"></iconify-icon>Google
+        </button>
+        <button class="social-btn" onclick="socialRegister('Apple')">
+          <iconify-icon icon="mdi:apple" style="font-size:20px"></iconify-icon>Apple
+        </button>
+      </div>
+
+      <div class="auth-switch">
+        Déjà un compte ? <a href="login.html">Se connecter →</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="js/app.js"></script>
+<script>
+const darkBtn = document.getElementById('dark-toggle')
+if (localStorage.getItem('fly360-theme') === 'dark') document.body.classList.add('dark')
+darkBtn?.addEventListener('click', () => {
+  const d = document.body.classList.toggle('dark')
+  localStorage.setItem('fly360-theme', d ? 'dark' : 'light')
+  document.getElementById('dark-icon').setAttribute('icon', d ? 'solar:sun-bold-duotone' : 'solar:moon-bold-duotone')
+})
+window.addEventListener('scroll', () => document.getElementById('header').classList.toggle('scrolled', window.scrollY > 8))
+
+function togglePwd(id, ico) {
+  const i = document.getElementById(id)
+  i.type = i.type === 'password' ? 'text' : 'password'
+  document.getElementById(ico).setAttribute('icon', i.type === 'password' ? 'solar:eye-bold-duotone' : 'solar:eye-closed-bold-duotone')
+}
+
+function checkStrength(val) {
+  const fill = document.getElementById('pwd-fill')
+  const lbl = document.getElementById('pwd-label')
+  let score = 0
+  if (val.length >= 8) score++
+  if (/[A-Z]/.test(val)) score++
+  if (/[0-9]/.test(val)) score++
+  if (/[^A-Za-z0-9]/.test(val)) score++
+  const levels = [
+    { pct:'0%', color:'var(--gray-200)', text:'Entrez un mot de passe' },
+    { pct:'25%', color:'var(--red)', text:'Trop faible' },
+    { pct:'50%', color:'var(--yellow)', text:'Moyen' },
+    { pct:'75%', color:'var(--blue)', text:'Bon' },
+    { pct:'100%', color:'var(--green)', text:'Excellent 💪' },
+  ]
+  const l = levels[score] || levels[0]
+  fill.style.width = l.pct; fill.style.background = l.color; lbl.textContent = l.text
+}
+
+function handleRegister(e) {
+  e.preventDefault()
+  const fname = document.getElementById('fname').value.trim()
+  const lname = document.getElementById('lname').value.trim()
+  const email = document.getElementById('email').value.trim()
+  const pwd = document.getElementById('password').value
+  const cpwd = document.getElementById('confirm-pwd').value
+  const terms = document.getElementById('terms').checked
+  const err = document.getElementById('error-msg')
+  const ok = document.getElementById('success-msg')
+  err.classList.remove('show'); ok.classList.remove('show')
+
+  const checks = [
+    [!fname || !lname, 'Prénom et nom sont obligatoires.'],
+    [!email || !email.includes('@'), 'Email invalide.'],
+    [pwd.length < 8, 'Mot de passe trop court (8 caractères minimum).'],
+    [pwd !== cpwd, 'Les mots de passe ne correspondent pas.'],
+    [!terms, 'Vous devez accepter les conditions d\'utilisation.'],
+  ]
+  const fail = checks.find(c => c[0])
+  if (fail) { document.getElementById('error-text').textContent = fail[1]; err.classList.add('show'); return }
+
+  const btn = document.getElementById('register-btn')
+  btn.innerHTML = '<iconify-icon icon="solar:refresh-bold" style="animation:spin 1s linear infinite"></iconify-icon> Création du compte...'
+  btn.disabled = true
+
+  setTimeout(() => {
+    const user = {
+      id: 'u_' + Date.now(), email, firstName: fname, lastName: lname,
+      phone: document.getElementById('phone').value,
+      country: document.getElementById('country').value,
+      newsletter: document.getElementById('newsletter').checked,
+      points: 0, tier: 'Standard',
+      createdAt: new Date().toISOString()
+    }
+    localStorage.setItem('fly360_user', JSON.stringify(user))
+    ok.classList.add('show')
+    setTimeout(() => { window.location.href = 'dashboard.html' }, 1500)
+  }, 2000)
+}
+
+function socialRegister(provider) {
+  const user = {
+    id: 'u_' + Date.now(), email: `demo@${provider.toLowerCase()}.com`,
+    firstName: 'Jean', lastName: provider, provider,
+    points: 0, tier: 'Standard', createdAt: new Date().toISOString()
+  }
+  localStorage.setItem('fly360_user', JSON.stringify(user))
+  document.getElementById('success-msg').classList.add('show')
+  setTimeout(() => { window.location.href = 'dashboard.html' }, 1200)
+}
+
+if (localStorage.getItem('fly360_user')) window.location.href = 'dashboard.html'
+
+const s = document.createElement('style')
+s.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}'
+document.head.appendChild(s)
+</script>
+</body>
+</html>

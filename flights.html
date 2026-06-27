@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vols pas chers — Fly360</title>
+  <link rel="icon" href="images/logo/logo.png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/shared.css">
+  <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
+  <style>
+    /* ══ HERO ══ */
+    .flights-hero{background:linear-gradient(135deg,#0f172a,#1e293b);padding:28px 0 0;border-bottom:3px solid var(--orange)}
+    .flights-hero-title{display:flex;align-items:center;gap:10px;font-size:28px;font-weight:800;color:white;margin-bottom:6px}
+    .flights-hero-sub{font-size:14px;color:#94a3b8;margin-bottom:20px}
+
+    /* ══ SEARCH BOX ══ */
+    .fsbox{background:white;border-radius:12px;padding:20px 24px;box-shadow:0 20px 50px rgba(0,0,0,.15);margin-bottom:-1px}
+    body.dark .fsbox{background:#1e293b;border:1px solid #334155}
+    .fsb-tabs{display:flex;gap:3px;background:var(--gray-50);padding:3px;border-radius:10px;width:fit-content;margin-bottom:16px}
+    body.dark .fsb-tabs{background:#0f172a}
+    .fsb-tab{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;color:var(--gray-500);transition:all .2s;display:flex;align-items:center;gap:6px}
+    .fsb-tab.active{background:var(--orange);color:white;box-shadow:0 2px 8px rgba(249,115,22,.3)}
+    .fsb-row{display:grid;grid-template-columns:1fr 36px 1fr 1fr 1fr auto;gap:10px;align-items:end;margin-bottom:12px}
+    .fsb-field{display:flex;flex-direction:column;gap:4px;position:relative}
+    .fsb-field label{font-size:10px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:5px}
+    .fsb-field input,.fsb-field select{padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:13px;color:var(--gray-800);transition:all .2s;width:100%}
+    body.dark .fsb-field input,body.dark .fsb-field select{background:#0f172a;border-color:#334155;color:#e2e8f0}
+    .fsb-field input:focus,.fsb-field select:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(249,115,22,.08);outline:none}
+    .swap-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--gray-200);display:flex;align-items:center;justify-content:center;color:var(--gray-400);align-self:flex-end;transition:all .2s;font-size:18px;cursor:pointer}
+    .swap-btn:hover{border-color:var(--orange);color:var(--orange);transform:rotate(180deg)}
+    .fsb-btn{display:flex;align-items:center;gap:7px;background:var(--orange);color:white;padding:11px 22px;border-radius:8px;font-size:14px;font-weight:700;height:44px;transition:all .2s;white-space:nowrap;cursor:pointer;border:none}
+    .fsb-btn:hover{background:var(--orange-dark);transform:translateY(-1px)}
+    .fsb-extras{display:flex;align-items:center;gap:18px;padding-top:10px;border-top:1px solid var(--gray-100);flex-wrap:wrap}
+    body.dark .fsb-extras{border-color:#334155}
+    .fsb-check{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-600);cursor:pointer}
+    body.dark .fsb-check{color:#94a3b8}
+    .fsb-check input{accent-color:var(--orange)}
+    .fsb-tip{margin-left:auto;font-size:11px;color:var(--gray-400);font-style:italic}
+
+    /* ══ PAX DROPDOWN ══ */
+    .pax-drop{position:absolute;top:calc(100% + 8px);right:0;width:300px;background:white;border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,.15);border:1px solid var(--gray-100);z-index:500;padding:16px;display:none}
+    body.dark .pax-drop{background:#1e293b;border-color:#334155}
+    .pax-drop.open{display:block}
+    .pax-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--gray-50)}
+    body.dark .pax-row{border-color:#334155}
+    .pax-row:last-of-type{border-bottom:none}
+    .pax-lbl strong{display:block;font-size:13px;font-weight:600;color:var(--gray-800)}
+    body.dark .pax-lbl strong{color:#f1f5f9}
+    .pax-lbl span{font-size:11px;color:var(--gray-400)}
+    .pax-ctr{display:flex;align-items:center;gap:12px}
+    .pax-btn{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--gray-200);font-size:16px;font-weight:700;color:var(--gray-600);display:flex;align-items:center;justify-content:center;transition:all .2s;cursor:pointer}
+    .pax-btn:hover{border-color:var(--orange);color:var(--orange)}
+    .pax-num{font-size:16px;font-weight:700;color:var(--gray-800);min-width:20px;text-align:center}
+    body.dark .pax-num{color:#f1f5f9}
+    .class-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--gray-100)}
+    body.dark .class-grid{border-color:#334155}
+    .class-btn{padding:7px;border-radius:8px;border:1.5px solid var(--gray-200);font-size:12px;font-weight:600;color:var(--gray-600);transition:all .2s;cursor:pointer;text-align:center}
+    .class-btn.active{border-color:var(--orange);color:var(--orange);background:var(--orange-light)}
+    .pax-apply{width:100%;margin-top:12px;background:var(--orange);color:white;padding:10px;border-radius:8px;font-size:13px;font-weight:700;transition:background .2s;cursor:pointer;border:none}
+    .pax-apply:hover{background:var(--orange-dark)}
+
+    /* ══ AUTOCOMPLETE ══ */
+    .ac-list{position:absolute;top:100%;left:0;right:0;background:white;border-radius:8px;box-shadow:0 8px 30px rgba(0,0,0,.12);border:1px solid var(--gray-100);z-index:500;display:none;max-height:220px;overflow-y:auto}
+    body.dark .ac-list{background:#1e293b;border-color:#334155}
+    .ac-list.open{display:block}
+    .ac-item{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;transition:background .2s;font-size:13px;color:var(--gray-700)}
+    body.dark .ac-item{color:#e2e8f0}
+    .ac-item:hover{background:var(--orange-light);color:var(--orange)}
+    .ac-item iconify-icon{font-size:16px;color:var(--orange);flex-shrink:0}
+    .ac-code{font-size:11px;font-weight:700;color:var(--orange);background:var(--orange-light);padding:2px 6px;border-radius:4px;margin-left:auto}
+
+    /* ══ LAYOUT ══ */
+    .flights-layout{display:grid;grid-template-columns:260px 1fr;gap:24px;padding:24px 0 48px;align-items:start}
+
+    /* ══ SIDEBAR ══ */
+    .fl-sidebar{background:white;border-radius:12px;border:1px solid var(--gray-100);padding:18px;position:sticky;top:88px}
+    body.dark .fl-sidebar{background:#1e293b;border-color:#334155}
+    .fl-sidebar-title{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--gray-800);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--gray-100)}
+    body.dark .fl-sidebar-title{color:#f1f5f9;border-color:#334155}
+
+    /* ══ TOOLBAR ══ */
+    .fl-toolbar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:white;border-radius:8px;border:1px solid var(--gray-100);margin-bottom:14px;flex-wrap:wrap;gap:10px}
+    body.dark .fl-toolbar{background:#1e293b;border-color:#334155}
+    .fl-count{font-size:14px;font-weight:700;color:var(--gray-800)}
+    body.dark .fl-count{color:#f1f5f9}
+    .fl-sort{padding:7px 12px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:12px;color:var(--gray-700);cursor:pointer;transition:border-color .2s}
+    body.dark .fl-sort{background:#0f172a;border-color:#334155;color:#e2e8f0}
+    .fl-sort:focus{border-color:var(--orange);outline:none}
+
+    /* ══ FLIGHT CARD ══ */
+    .fl-card{background:white;border:1px solid var(--gray-100);border-radius:12px;margin-bottom:12px;overflow:hidden;transition:all .3s;cursor:pointer}
+    body.dark .fl-card{background:#1e293b;border-color:#334155}
+    .fl-card:hover{border-color:var(--orange-border);box-shadow:0 8px 30px rgba(0,0,0,.08);transform:translateY(-2px)}
+    .fl-card-main{display:grid;grid-template-columns:180px 1fr auto;gap:16px;align-items:center;padding:18px 20px}
+    .fl-airline{display:flex;align-items:center;gap:10px}
+    .fl-logo{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .fl-aname{font-size:14px;font-weight:700;color:var(--gray-800)}
+    body.dark .fl-aname{color:#f1f5f9}
+    .fl-anum{font-size:11px;color:var(--gray-400)}
+    .fl-route{display:flex;align-items:center;gap:12px;flex:1}
+    .fl-tb{text-align:center}
+    .fl-time{font-size:22px;font-weight:800;color:var(--gray-900)}
+    body.dark .fl-time{color:#f1f5f9}
+    .fl-ap{font-size:11px;font-weight:600;color:var(--gray-400)}
+    .fl-line{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+    .fl-dur{font-size:11px;color:var(--gray-400)}
+    .fl-bar{width:100%;height:1px;background:var(--gray-200);position:relative}
+    .fl-dot{width:7px;height:7px;border-radius:50%;position:absolute;top:-3px;left:50%;transform:translateX(-50%)}
+    .fl-stop{font-size:11px;font-weight:600}
+    .fl-price-box{text-align:right}
+    .fl-price{font-size:26px;font-weight:800;color:var(--orange)}
+    .fl-punit{font-size:11px;color:var(--gray-400);margin-bottom:10px}
+    .fl-sel-btn{display:flex;align-items:center;gap:6px;background:var(--orange);color:white;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;transition:all .2s;cursor:pointer;border:none;white-space:nowrap}
+    .fl-sel-btn:hover{background:var(--orange-dark)}
+    .fl-extras{padding:10px 20px;background:var(--gray-50);border-top:1px solid var(--gray-100);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+    body.dark .fl-extras{background:#334155;border-color:#475569}
+    .fl-extra{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--gray-600)}
+    body.dark .fl-extra{color:#94a3b8}
+
+    /* ══ DETAIL PAGE ══ */
+    .fl-detail{max-width:760px;margin:32px auto;padding:0 24px 48px}
+    .fdc{background:white;border-radius:12px;border:1px solid var(--gray-100);padding:22px;margin-bottom:16px}
+    body.dark .fdc{background:#1e293b;border-color:#334155}
+    .fdc-title{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--gray-800);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--gray-100)}
+    body.dark .fdc-title{color:#f1f5f9;border-color:#334155}
+    .fdc-route{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;margin-bottom:16px}
+    .fdc-time{font-size:36px;font-weight:800;color:var(--gray-900)}
+    body.dark .fdc-time{color:#f1f5f9}
+    .fdc-code{font-size:14px;font-weight:700;color:var(--gray-500)}
+    .fdc-city{font-size:12px;color:var(--gray-400)}
+    .fdc-arrow{font-size:32px;color:var(--orange);text-align:center}
+    .fdc-infos{display:flex;gap:20px;flex-wrap:wrap}
+    .fdc-info{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--gray-600)}
+    body.dark .fdc-info{color:#94a3b8}
+    .opt-item{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--gray-100)}
+    body.dark .opt-item{border-color:#334155}
+    .opt-item:last-child{border-bottom:none}
+    .opt-left{display:flex;align-items:center;gap:12px}
+    .opt-ico{width:42px;height:42px;border-radius:10px;background:var(--orange-light);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+    .opt-name{font-size:14px;font-weight:600;color:var(--gray-800)}
+    body.dark .opt-name{color:#f1f5f9}
+    .opt-desc{font-size:12px;color:var(--gray-400)}
+    .opt-price{font-size:14px;font-weight:700;color:var(--orange)}
+    .combined-box{background:linear-gradient(135deg,#0f4c3a,#0d6b52);border-radius:12px;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}
+    .cb-badge{background:var(--orange);color:white;font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;margin-bottom:8px;display:inline-block}
+    .cb-title{font-size:18px;font-weight:800;color:white;margin-bottom:5px}
+    .cb-sub{font-size:13px;color:rgba(255,255,255,.7)}
+    .cb-btn{display:flex;align-items:center;gap:7px;background:white;color:#0f4c3a;padding:11px 22px;border-radius:8px;font-size:13px;font-weight:700;white-space:nowrap;transition:all .2s;flex-shrink:0;cursor:pointer;border:none}
+    .cb-btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.15)}
+    .sum-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--gray-600);padding:6px 0}
+    body.dark .sum-row{color:#94a3b8}
+    .sum-total{display:flex;justify-content:space-between;align-items:center;padding-top:12px;margin-top:8px;border-top:2px solid var(--gray-100);font-size:16px;font-weight:700;color:var(--gray-800)}
+    body.dark .sum-total{border-color:#334155;color:#f1f5f9}
+    .sum-total strong{font-size:24px;color:var(--orange)}
+    .continue-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--gray-900);color:white;padding:14px;border-radius:8px;font-size:15px;font-weight:700;margin-top:16px;transition:all .2s;cursor:pointer;border:none;text-decoration:none}
+    .continue-btn:hover{background:var(--orange);transform:translateY(-2px)}
+    .secure-note{display:flex;align-items:center;justify-content:center;gap:5px;font-size:11px;color:var(--gray-400);margin-top:8px}
+
+    /* ══ EMPTY STATE ══ */
+    .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;gap:12px}
+    .empty-state h3{font-size:20px;font-weight:700;color:var(--gray-600)}
+    .empty-state p{font-size:14px;color:var(--gray-400)}
+
+    @media(max-width:1024px){.flights-layout{grid-template-columns:1fr}}
+    @media(max-width:768px){.fl-card-main{grid-template-columns:1fr;gap:12px}.fsb-row{grid-template-columns:1fr}.swap-btn{display:none}.fsb-btn{width:100%;justify-content:center}}
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header class="header" id="header">
+  <div class="header-inner container">
+    <a href="index.html" class="logo"><img src="images/logo/logo.png" alt="Fly360"></a>
+    <nav class="nav">
+      <a href="index.html" class="nav-link"><iconify-icon icon="solar:home-2-bold-duotone"></iconify-icon>Accueil</a>
+      <a href="flights.html" class="nav-link active"><iconify-icon icon="solar:airplane-bold-duotone"></iconify-icon>Vols</a>
+      <a href="hotels.html" class="nav-link"><iconify-icon icon="solar:buildings-bold-duotone"></iconify-icon>Hôtels</a>
+      <a href="cars.html" class="nav-link"><iconify-icon icon="solar:car-bold-duotone"></iconify-icon>Voitures</a>
+      <a href="planner.html" class="nav-link"><iconify-icon icon="solar:calendar-bold-duotone"></iconify-icon>Planificateur</a>
+      <a href="contact.html" class="nav-link"><iconify-icon icon="solar:chat-round-dots-bold-duotone"></iconify-icon>Contact</a>
+    </nav>
+    <div class="header-actions">
+      <div class="lang-btn"><iconify-icon icon="solar:global-bold-duotone"></iconify-icon>FR / XAF</div>
+      <button class="icon-btn" id="dark-toggle"><iconify-icon icon="solar:moon-bold-duotone" id="dark-icon"></iconify-icon></button>
+      <button class="icon-btn" style="position:relative" onclick="alert('3 nouvelles alertes voyage')"><iconify-icon icon="solar:bell-bing-bold-duotone"></iconify-icon><span class="notif-badge">3</span></button>
+      <a href="login.html" class="btn-login"><iconify-icon icon="solar:login-bold-duotone"></iconify-icon>Connexion</a>
+      <a href="register.html" class="btn-signup"><iconify-icon icon="solar:user-plus-bold-duotone"></iconify-icon>S'inscrire</a>
+      <button class="burger" onclick="toggleMenu()"><iconify-icon icon="solar:hamburger-menu-bold-duotone" style="font-size:22px"></iconify-icon></button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html" class="nav-link"><iconify-icon icon="solar:home-2-bold-duotone"></iconify-icon>Accueil</a>
+    <a href="flights.html" class="nav-link active"><iconify-icon icon="solar:airplane-bold-duotone"></iconify-icon>Vols</a>
+    <a href="hotels.html" class="nav-link"><iconify-icon icon="solar:buildings-bold-duotone"></iconify-icon>Hôtels</a>
+    <a href="cars.html" class="nav-link"><iconify-icon icon="solar:car-bold-duotone"></iconify-icon>Voitures</a>
+    <a href="planner.html" class="nav-link"><iconify-icon icon="solar:calendar-bold-duotone"></iconify-icon>Planificateur</a>
+    <a href="contact.html" class="nav-link"><iconify-icon icon="solar:chat-round-dots-bold-duotone"></iconify-icon>Contact</a>
+    <div class="mobile-menu-btns">
+      <a href="login.html" class="btn-login">Connexion</a>
+      <a href="register.html" class="btn-signup">S'inscrire</a>
+    </div>
+  </div>
+</header>
+
+
+<!-- ══════════════════════════════════════
+     VUE 1 : LISTE DES VOLS (par défaut)
+══════════════════════════════════════ -->
+<div id="view-list">
+
+  <!-- HERO + BARRE DE RECHERCHE -->
+  <div class="flights-hero">
+    <div class="container">
+      <div class="page-breadcrumb">
+        <a href="index.html">Accueil</a>
+        <iconify-icon icon="solar:alt-arrow-right-bold"></iconify-icon>
+        <span>Vols</span>
+      </div>
+      <h1 class="flights-hero-title">
+        <iconify-icon icon="solar:airplane-bold-duotone" style="color:var(--orange)"></iconify-icon>
+        Recherche de vols
+      </h1>
+      <p class="flights-hero-sub">50+ compagnies comparées · Prix garanti le plus bas · Depuis Douala, Cameroun</p>
+
+      <div class="fsbox">
+        <div class="fsb-tabs">
+          <button class="fsb-tab active" onclick="setTrip(this,'AR')"><iconify-icon icon="solar:arrow-right-up-bold-duotone"></iconify-icon>Aller-Retour</button>
+          <button class="fsb-tab" onclick="setTrip(this,'A')"><iconify-icon icon="solar:arrow-right-bold-duotone"></iconify-icon>Aller simple</button>
+          <button class="fsb-tab" onclick="setTrip(this,'M')"><iconify-icon icon="solar:route-bold-duotone"></iconify-icon>Multi-destinations</button>
+        </div>
+
+        <div class="fsb-row">
+          <div class="fsb-field">
+            <label><iconify-icon icon="solar:map-point-bold-duotone"></iconify-icon>Départ</label>
+            <input type="text" id="fsb-from" value="Douala (DLA)" autocomplete="off" oninput="showAC('from',this.value)" onfocus="showAC('from',this.value)">
+            <div class="ac-list" id="ac-from"></div>
+          </div>
+
+          <button class="swap-btn" onclick="swapLoc()" title="Inverser départ/arrivée">
+            <iconify-icon icon="solar:transfer-horizontal-bold-duotone"></iconify-icon>
+          </button>
+
+          <div class="fsb-field">
+            <label><iconify-icon icon="solar:map-point-bold-duotone"></iconify-icon>Destination</label>
+            <input type="text" id="fsb-to" placeholder="Où allez-vous ?" autocomplete="off" oninput="showAC('to',this.value)" onfocus="showAC('to',this.value)">
+            <div class="ac-list" id="ac-to"></div>
+          </div>
+
+          <div class="fsb-field">
+            <label><iconify-icon icon="solar:calendar-bold-duotone"></iconify-icon>Départ</label>
+            <input type="date" id="fsb-dep">
+          </div>
+
+          <div class="fsb-field" id="ret-field">
+            <label><iconify-icon icon="solar:calendar-mark-bold-duotone"></iconify-icon>Retour</label>
+            <input type="date" id="fsb-ret">
+          </div>
+
+          <div class="fsb-field" style="position:relative">
+            <label><iconify-icon icon="solar:users-group-rounded-bold-duotone"></iconify-icon>Voyageurs · Classe</label>
+            <input type="text" id="fsb-pax" value="1 adulte · Économique" readonly onclick="togglePax()" style="cursor:pointer">
+            <div class="pax-drop" id="pax-drop">
+              <div class="pax-row">
+                <div class="pax-lbl"><strong>Adultes</strong><span>12 ans et +</span></div>
+                <div class="pax-ctr">
+                  <button class="pax-btn" onclick="chPax('a',-1)">−</button>
+                  <span class="pax-num" id="pn-a">1</span>
+                  <button class="pax-btn" onclick="chPax('a',1)">+</button>
+                </div>
+              </div>
+              <div class="pax-row">
+                <div class="pax-lbl"><strong>Enfants</strong><span>2 à 11 ans</span></div>
+                <div class="pax-ctr">
+                  <button class="pax-btn" onclick="chPax('c',-1)">−</button>
+                  <span class="pax-num" id="pn-c">0</span>
+                  <button class="pax-btn" onclick="chPax('c',1)">+</button>
+                </div>
+              </div>
+              <div class="pax-row">
+                <div class="pax-lbl"><strong>Bébés</strong><span>Moins de 2 ans</span></div>
+                <div class="pax-ctr">
+                  <button class="pax-btn" onclick="chPax('b',-1)">−</button>
+                  <span class="pax-num" id="pn-b">0</span>
+                  <button class="pax-btn" onclick="chPax('b',1)">+</button>
+                </div>
+              </div>
+              <div class="class-grid">
+                <button class="class-btn active" onclick="setClass(this,'Économique')">Économique</button>
+                <button class="class-btn" onclick="setClass(this,'Affaires')">Affaires</button>
+                <button class="class-btn" onclick="setClass(this,'Premium Éco')">Premium Éco</button>
+                <button class="class-btn" onclick="setClass(this,'Première')">Première</button>
+              </div>
+              <button class="pax-apply" onclick="applyPax()">Appliquer</button>
+            </div>
+          </div>
+
+          <button class="fsb-btn" onclick="searchFlights()">
+            <iconify-icon icon="solar:magnifer-bold"></iconify-icon>Rechercher
+          </button>
+        </div>
+
+        <div class="fsb-extras">
+          <label class="fsb-check"><input type="checkbox" id="opt-direct"> Vols directs uniquement</label>
+          <label class="fsb-check"><input type="checkbox" id="opt-flex"> Dates flexibles ±3 jours</label>
+          <label class="fsb-check"><input type="checkbox" id="opt-bag" checked> Bagage inclus</label>
+          <span class="fsb-tip">💡 Mardi & mercredi = jours les moins chers</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RÉSULTATS -->
+  <div class="container flights-layout">
+
+    <!-- SIDEBAR FILTRES -->
+    <aside class="fl-sidebar">
+      <div class="fl-sidebar-title">
+        <iconify-icon icon="solar:filter-bold-duotone" style="color:var(--orange)"></iconify-icon>Filtres
+      </div>
+
+      <div class="filter-block">
+        <h3><iconify-icon icon="solar:route-bold-duotone" style="color:var(--orange)"></iconify-icon>Escales</h3>
+        <div class="filter-checks">
+          <label class="check-opt"><input type="checkbox" checked onchange="filterF()"> Vol direct</label>
+          <label class="check-opt"><input type="checkbox" checked onchange="filterF()"> 1 escale</label>
+          <label class="check-opt"><input type="checkbox" checked onchange="filterF()"> 2+ escales</label>
+        </div>
+      </div>
+
+      <div class="filter-block">
+        <h3><iconify-icon icon="solar:airplane-bold-duotone" style="color:var(--orange)"></iconify-icon>Compagnies</h3>
+        <div class="filter-checks" id="airline-filters">
+          <label class="check-opt"><input type="checkbox" checked onchange="filterF()"> Camair-Co</label>
+          <label class="check-opt"><input type="checkbox" checked onchange="filterF()"> Air France</label>
+          <label class="check-opt"><input type="checkbox" checked onchange="filterF()"> Ethiopian Airlines</label>
+          <label class="check-opt"><input type="checkbox" checked onchange="filterF()"> Emirates</label>
+          <label class="check-opt"><input type="checkbox" checked onchange="filterF()"> Turkish Airlines</label>
+          <label class="check-opt"><input type="checkbox" checked onchange="filterF()"> Kenya Airways</label>
+        </div>
+      </div>
+
+      <div class="filter-block">
+        <h3><iconify-icon icon="solar:money-bag-bold-duotone" style="color:var(--orange)"></iconify-icon>Budget max</h3>
+        <div class="price-range-wrap">
+          <input type="range" min="50000" max="900000" value="900000" id="fl-price-range" class="price-range" oninput="updateFLPrice(this.value)">
+          <div class="price-range-labels">
+            <span>50 000 FCFA</span>
+            <span id="fl-price-lbl">900 000 FCFA</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-block">
+        <h3><iconify-icon icon="solar:clock-bold-duotone" style="color:var(--orange)"></iconify-icon>Heure départ</h3>
+        <div class="filter-checks">
+          <label class="check-opt"><input type="checkbox" checked onchange="filterF()"> Matin (06h-12h)</label>
+          <label class="check-opt"><input type="checkbox" checked onchange="filterF()"> Après-midi (12h-18h)</label>
+          <label class="check-opt"><input type="checkbox" checked onchange="filterF()"> Soir (18h-24h)</label>
+        </div>
+      </div>
+
+      <div class="filter-block">
+        <h3><iconify-icon icon="solar:bag-bold-duotone" style="color:var(--orange)"></iconify-icon>Bagages</h3>
+        <div class="filter-checks">
+          <label class="check-opt"><input type="checkbox" onchange="filterF()"> Cabine inclus</label>
+          <label class="check-opt"><input type="checkbox" onchange="filterF()"> Soute inclus</label>
+        </div>
+      </div>
+
+      <button class="reset-filters-btn" onclick="resetFilters()">
+        <iconify-icon icon="solar:restart-bold"></iconify-icon>Réinitialiser
+      </button>
+    </aside>
+
+    <!-- LISTE VOLS -->
+    <main>
+      <div class="fl-toolbar">
+        <span class="fl-count" id="fl-count">10 vols trouvés</span>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:13px;color:var(--gray-500)">Trier :</span>
+          <select class="fl-sort" onchange="sortF(this.value)">
+            <option value="rec">Recommandé</option>
+            <option value="pa">Prix croissant</option>
+            <option value="pd">Prix décroissant</option>
+            <option value="dur">Durée</option>
+            <option value="dep">Heure départ</option>
+          </select>
+        </div>
+      </div>
+      <div id="fl-results"></div>
+      <div id="fl-empty" class="empty-state" style="display:none">
+        <iconify-icon icon="solar:airplane-bold-duotone" style="font-size:64px;color:var(--gray-200)"></iconify-icon>
+        <h3>Aucun vol trouvé</h3>
+        <p>Modifiez vos critères ou dates.</p>
+        <button onclick="resetFilters()" class="btn-signup" style="margin-top:8px">Réinitialiser</button>
+      </div>
+    </main>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     VUE 2 : DÉTAIL D'UN VOL
+══════════════════════════════════════ -->
+<div id="view-detail" style="display:none">
+  <div class="fl-detail">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+      <button onclick="showList()" style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--orange);background:none;border:none;cursor:pointer">
+        <iconify-icon icon="solar:alt-arrow-left-bold"></iconify-icon>Retour aux résultats
+      </button>
+    </div>
+
+    <h2 style="font-size:22px;font-weight:800;color:var(--gray-900);margin-bottom:20px" id="det-title">Détails de votre vol</h2>
+
+    <!-- INFO VOL -->
+    <div class="fdc" id="det-vol-card">
+      <div class="fdc-title">
+        <iconify-icon icon="solar:airplane-bold-duotone" style="color:var(--orange)"></iconify-icon>
+        Vol Aller
+      </div>
+      <div class="fdc-route" id="det-route"></div>
+      <div class="fdc-infos" id="det-infos"></div>
+    </div>
+
+    <!-- OPTIONS -->
+    <div class="fdc">
+      <div class="fdc-title">
+        <iconify-icon icon="solar:settings-bold-duotone" style="color:var(--orange)"></iconify-icon>
+        Personnalisez votre voyage
+      </div>
+      <div class="opt-item">
+        <div class="opt-left">
+          <div class="opt-ico"><iconify-icon icon="solar:bag-bold-duotone" style="color:var(--orange)"></iconify-icon></div>
+          <div>
+            <div class="opt-name">Bagage en soute (23kg)</div>
+            <div class="opt-desc">Voyagez l'esprit léger</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span class="opt-price">+15 000 FCFA</span>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+            <input type="checkbox" id="opt-soute" onchange="updateTotal()" style="accent-color:var(--orange);width:16px;height:16px">
+          </label>
+        </div>
+      </div>
+      <div class="opt-item">
+        <div class="opt-left">
+          <div class="opt-ico"><iconify-icon icon="solar:shield-check-bold-duotone" style="color:var(--orange)"></iconify-icon></div>
+          <div>
+            <div class="opt-name">Assurance annulation</div>
+            <div class="opt-desc">Remboursement garanti sous conditions</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span class="opt-price">+6 500 FCFA</span>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+            <input type="checkbox" id="opt-assur" onchange="updateTotal()" style="accent-color:var(--orange);width:16px;height:16px">
+          </label>
+        </div>
+      </div>
+      <div class="opt-item">
+        <div class="opt-left">
+          <div class="opt-ico"><iconify-icon icon="solar:seat-bold-duotone" style="color:var(--orange)"></iconify-icon></div>
+          <div>
+            <div class="opt-name">Choix du siège</div>
+            <div class="opt-desc">Fenêtre, couloir, sortie de secours</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span class="opt-price">+5 000 FCFA</span>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+            <input type="checkbox" id="opt-seat" onchange="updateTotal()" style="accent-color:var(--orange);width:16px;height:16px">
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- OFFRE COMBINÉE -->
+    <div class="combined-box">
+      <div>
+        <div class="cb-badge">OFFRE COMBINÉE · -15%</div>
+        <div class="cb-title">Ajoutez un hôtel à destination</div>
+        <div class="cb-sub">Économisez jusqu'à 15% en réservant vol + hôtel ensemble.</div>
+      </div>
+      <button class="cb-btn" onclick="window.location.href='hotels.html'">
+        <iconify-icon icon="solar:buildings-bold-duotone"></iconify-icon>Voir les hôtels
+      </button>
+    </div>
+
+    <!-- RÉCAPITULATIF -->
+    <div class="fdc">
+      <div class="fdc-title">
+        <iconify-icon icon="solar:list-bold-duotone" style="color:var(--orange)"></iconify-icon>Récapitulatif
+      </div>
+      <div class="sum-row"><span>Vol (1 pers.)</span><span id="sum-vol">—</span></div>
+      <div class="sum-row" id="sum-soute-row" style="display:none"><span>Bagage soute</span><span>15 000 FCFA</span></div>
+      <div class="sum-row" id="sum-assur-row" style="display:none"><span>Assurance annulation</span><span>6 500 FCFA</span></div>
+      <div class="sum-row" id="sum-seat-row" style="display:none"><span>Choix du siège</span><span>5 000 FCFA</span></div>
+      <div class="sum-total">
+        <span>Total à payer</span>
+        <strong id="sum-total">—</strong>
+      </div>
+      <a href="checkout.html" class="continue-btn" id="continue-btn">
+        <iconify-icon icon="solar:cart-bold-duotone"></iconify-icon>Continuer sans hôtel
+      </a>
+      <div class="secure-note">
+        <iconify-icon icon="solar:shield-keyhole-bold-duotone" style="color:var(--green)"></iconify-icon>
+        Paiement 100% sécurisé · QR Code double vérification
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ FOOTER ══ -->
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="footer-top-grid">
+        <div class="newsletter-box">
+          <div class="newsletter-left">
+            <iconify-icon icon="solar:letter-bold-duotone" style="font-size:36px;color:var(--orange)"></iconify-icon>
+            <div><h3>Alertes prix vols</h3><p>Notifié dès que le prix baisse vers votre destination.</p></div>
+          </div>
+          <form class="newsletter-form" onsubmit="subNewsletter(event)">
+            <div class="newsletter-input-wrap">
+              <iconify-icon icon="solar:letter-bold-duotone" style="color:#64748b"></iconify-icon>
+              <input type="email" placeholder="votre@email.com" required>
+            </div>
+            <button type="submit"><iconify-icon icon="solar:arrow-right-bold"></iconify-icon>Activer</button>
+          </form>
+        </div>
+        <div class="app-box">
+          <iconify-icon icon="solar:smartphone-bold-duotone" style="font-size:36px;color:var(--blue)"></iconify-icon>
+          <h3>Fly360 dans votre poche</h3>
+          <p>Alertes vol temps réel sur mobile.</p>
+          <div class="app-btns">
+            <a href="#" class="app-btn"><iconify-icon icon="mdi:apple" style="font-size:20px"></iconify-icon><div><span>Télécharger sur</span><strong>App Store</strong></div></a>
+            <a href="#" class="app-btn"><iconify-icon icon="mdi:google-play" style="font-size:20px;color:#22C55E"></iconify-icon><div><span>Disponible sur</span><strong>Google Play</strong></div></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="images/logo/logo.png" alt="Fly360" class="footer-logo">
+          <p>Fly360 — Plateforme de voyage N°1 au Cameroun. Vols, hôtels, voitures au meilleur prix.</p>
+          <div class="footer-social">
+            <a href="https://facebook.com" target="_blank" class="social-link"><iconify-icon icon="solar:facebook-bold-duotone"></iconify-icon></a>
+            <a href="https://twitter.com" target="_blank" class="social-link"><iconify-icon icon="fa6-brands:x-twitter"></iconify-icon></a>
+            <a href="https://instagram.com" target="_blank" class="social-link"><iconify-icon icon="solar:instagram-bold-duotone"></iconify-icon></a>
+            <a href="https://youtube.com" target="_blank" class="social-link"><iconify-icon icon="solar:youtube-bold-duotone"></iconify-icon></a>
+            <a href="https://wa.me/237600000000" target="_blank" class="social-link"><iconify-icon icon="solar:phone-bold-duotone"></iconify-icon></a>
+          </div>
+          <div class="footer-certifs">
+            <div class="certif"><iconify-icon icon="solar:shield-keyhole-bold-duotone" style="color:var(--green)"></iconify-icon>SSL</div>
+            <div class="certif"><iconify-icon icon="solar:card-bold-duotone" style="color:var(--blue)"></iconify-icon>Stripe</div>
+            <div class="certif"><iconify-icon icon="solar:star-bold-duotone" style="color:var(--yellow)"></iconify-icon>4.9/5</div>
+          </div>
+        </div>
+        <div>
+          <h5><iconify-icon icon="solar:compass-bold-duotone" style="color:var(--orange)"></iconify-icon>Services</h5>
+          <ul class="footer-links">
+            <li><a href="flights.html"><iconify-icon icon="solar:airplane-bold-duotone"></iconify-icon>Vols pas chers</a></li>
+            <li><a href="hotels.html"><iconify-icon icon="solar:buildings-bold-duotone"></iconify-icon>Réservation hôtels</a></li>
+            <li><a href="cars.html"><iconify-icon icon="solar:car-bold-duotone"></iconify-icon>Location voitures</a></li>
+            <li><a href="planner.html"><iconify-icon icon="solar:calendar-bold-duotone"></iconify-icon>Planificateur</a></li>
+            <li><a href="planner.html"><iconify-icon icon="solar:map-point-bold-duotone"></iconify-icon>Suivi voyageur</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5><iconify-icon icon="solar:map-bold-duotone" style="color:var(--orange)"></iconify-icon>Destinations</h5>
+          <ul class="footer-links">
+            <li><a href="flights.html?from=DLA&to=CDG"><iconify-icon icon="twemoji:flag-france"></iconify-icon>Douala → Paris</a></li>
+            <li><a href="flights.html?from=DLA&to=DXB"><iconify-icon icon="twemoji:flag-united-arab-emirates"></iconify-icon>Douala → Dubai</a></li>
+            <li><a href="flights.html?from=YAO&to=LHR"><iconify-icon icon="twemoji:flag-united-kingdom"></iconify-icon>Yaoundé → Londres</a></li>
+            <li><a href="flights.html?from=DLA&to=NBO"><iconify-icon icon="twemoji:flag-kenya"></iconify-icon>Douala → Nairobi</a></li>
+            <li><a href="flights.html?from=DLA&to=CMN"><iconify-icon icon="twemoji:flag-morocco"></iconify-icon>Douala → Casablanca</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5><iconify-icon icon="solar:user-circle-bold-duotone" style="color:var(--orange)"></iconify-icon>Mon espace</h5>
+          <ul class="footer-links">
+            <li><a href="login.html"><iconify-icon icon="solar:login-bold-duotone"></iconify-icon>Se connecter</a></li>
+            <li><a href="register.html"><iconify-icon icon="solar:user-plus-bold-duotone"></iconify-icon>Créer un compte</a></li>
+            <li><a href="dashboard.html"><iconify-icon icon="solar:widget-bold-duotone"></iconify-icon>Mon dashboard</a></li>
+            <li><a href="dashboard.html"><iconify-icon icon="solar:ticket-bold-duotone"></iconify-icon>Mes réservations</a></li>
+          </ul>
+          <h5 style="margin-top:20px"><iconify-icon icon="solar:headphones-round-sound-bold-duotone" style="color:var(--orange)"></iconify-icon>Contact</h5>
+          <ul class="footer-contact-list">
+            <li><iconify-icon icon="solar:letter-bold-duotone" style="color:var(--orange)"></iconify-icon><a href="mailto:contact@fly360.cm">contact@fly360.cm</a></li>
+            <li><iconify-icon icon="solar:phone-bold-duotone" style="color:var(--orange)"></iconify-icon><a href="tel:+237600000000">+237 600 000 000</a></li>
+            <li><iconify-icon icon="solar:map-point-bold-duotone" style="color:var(--orange)"></iconify-icon><span>Douala, Cameroun</span></li>
+            <li style="color:var(--green)"><iconify-icon icon="solar:clock-circle-bold-duotone" style="color:var(--green)"></iconify-icon><span>Support 24h/24 — 7j/7</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container footer-bottom-inner">
+      <span>© 2025 Fly360 Cameroun. Tous droits réservés.</span>
+      <div class="footer-bottom-links">
+        <a href="#">Confidentialité</a><a href="#">CGU</a><a href="#">Cookies</a>
+        <span class="footer-secure"><iconify-icon icon="solar:shield-keyhole-bold-duotone" style="color:var(--orange)"></iconify-icon>Paiement sécurisé · Stripe · QR Code</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="js/app.js"></script>
+<script>
+// ═══════════════════════════════════════════════
+// DONNÉES VOLS
+// ═══════════════════════════════════════════════
+const flightsData = [
+  { id:'f1', airline:'Camair-Co', num:'QC 101', logo:'solar:airplane-bold-duotone', color:'#FFF7ED', iconColor:'#F97316', from:'DLA', fromCity:'Douala', to:'CDG', toCity:'Paris', dep:'08:30', arr:'14:45', dur:'6h 15m', stops:0, stopLabel:'Direct', stopColor:'#22C55E', price:450000, baggage:true, meal:false, aircraft:'Boeing 737' },
+  { id:'f2', airline:'Air France', num:'AF 1234', logo:'solar:airplane-bold-duotone', color:'#EFF6FF', iconColor:'#0284C7', from:'DLA', fromCity:'Douala', to:'CDG', toCity:'Paris', dep:'10:15', arr:'19:20', dur:'9h 05m', stops:1, stopLabel:'1 escale', stopColor:'#F59E0B', price:380000, baggage:true, meal:true, aircraft:'Airbus A330' },
+  { id:'f3', airline:'Ethiopian Airlines', num:'ET 901', logo:'solar:airplane-bold-duotone', color:'#F0FDF4', iconColor:'#15803D', from:'DLA', fromCity:'Douala', to:'DXB', toCity:'Dubai', dep:'23:45', arr:'08:15', dur:'8h 30m', stops:0, stopLabel:'Direct', stopColor:'#22C55E', price:320000, baggage:true, meal:true, aircraft:'Boeing 787' },
+  { id:'f4', airline:'Emirates', num:'EK 789', logo:'solar:airplane-bold-duotone', color:'#FFF1F2', iconColor:'#DC2626', from:'DLA', fromCity:'Douala', to:'DXB', toCity:'Dubai', dep:'14:00', arr:'23:30', dur:'9h 30m', stops:0, stopLabel:'Direct', stopColor:'#22C55E', price:420000, baggage:true, meal:true, aircraft:'Boeing 777' },
+  { id:'f5', airline:'Turkish Airlines', num:'TK 543', logo:'solar:airplane-bold-duotone', color:'#FEF3C7', iconColor:'#B45309', from:'DLA', fromCity:'Douala', to:'CDG', toCity:'Paris', dep:'06:20', arr:'18:45', dur:'12h 25m', stops:1, stopLabel:'1 escale IST', stopColor:'#F59E0B', price:295000, baggage:true, meal:true, aircraft:'Airbus A321' },
+  { id:'f6', airline:'Kenya Airways', num:'KQ 205', logo:'solar:airplane-bold-duotone', color:'#EFF6FF', iconColor:'#1D4ED8', from:'DLA', fromCity:'Douala', to:'NBO', toCity:'Nairobi', dep:'07:30', arr:'13:00', dur:'5h 30m', stops:0, stopLabel:'Direct', stopColor:'#22C55E', price:280000, baggage:false, meal:false, aircraft:'Boeing 737' },
+  { id:'f7', airline:'Air France', num:'AF 5678', logo:'solar:airplane-bold-duotone', color:'#EFF6FF', iconColor:'#0284C7', from:'DLA', fromCity:'Douala', to:'LHR', toCity:'Londres', dep:'11:30', arr:'22:15', dur:'10h 45m', stops:1, stopLabel:'1 escale', stopColor:'#F59E0B', price:510000, baggage:true, meal:true, aircraft:'Airbus A350' },
+  { id:'f8', airline:'Camair-Co', num:'QC 205', logo:'solar:airplane-bold-duotone', color:'#FFF7ED', iconColor:'#F97316', from:'DLA', fromCity:'Douala', to:'ABJ', toCity:'Abidjan', dep:'09:00', arr:'11:30', dur:'2h 30m', stops:0, stopLabel:'Direct', stopColor:'#22C55E', price:145000, baggage:false, meal:false, aircraft:'CRJ 900' },
+  { id:'f9', airline:'Ethiopian Airlines', num:'ET 234', logo:'solar:airplane-bold-duotone', color:'#F0FDF4', iconColor:'#15803D', from:'DLA', fromCity:'Douala', to:'LHR', toCity:'Londres', dep:'22:00', arr:'11:30', dur:'13h 30m', stops:1, stopLabel:'1 escale ADD', stopColor:'#F59E0B', price:465000, baggage:true, meal:true, aircraft:'Boeing 787' },
+  { id:'f10', airline:'Camair-Co', num:'QC 310', logo:'solar:airplane-bold-duotone', color:'#FFF7ED', iconColor:'#F97316', from:'YAO', fromCity:'Yaoundé', to:'CDG', toCity:'Paris', dep:'16:00', arr:'22:30', dur:'6h 30m', stops:0, stopLabel:'Direct', stopColor:'#22C55E', price:470000, baggage:true, meal:false, aircraft:'Boeing 737' },
+]
+
+let filteredFlights = [...flightsData]
+let selectedFlight = null
+let pax = { a:1, c:0, b:0 }
+let travelClass = 'Économique'
+
+// ═══════════════════════════════════════════════
+// AÉROPORTS AUTOCOMPLETE
+// ═══════════════════════════════════════════════
+const airports = [
+  { code:'DLA', name:'Douala', country:'Cameroun', flag:'🇨🇲' },
+  { code:'YAO', name:'Yaoundé Nsimalen', country:'Cameroun', flag:'🇨🇲' },
+  { code:'CDG', name:'Paris Charles de Gaulle', country:'France', flag:'🇫🇷' },
+  { code:'ORY', name:'Paris Orly', country:'France', flag:'🇫🇷' },
+  { code:'DXB', name:'Dubai International', country:'Émirats', flag:'🇦🇪' },
+  { code:'LHR', name:'Londres Heathrow', country:'Royaume-Uni', flag:'🇬🇧' },
+  { code:'NBO', name:'Nairobi Jomo Kenyatta', country:'Kenya', flag:'🇰🇪' },
+  { code:'ABJ', name:'Abidjan Félix Houphouët', country:"Côte d'Ivoire", flag:'🇨🇮' },
+  { code:'CMN', name:'Casablanca Mohammed V', country:'Maroc', flag:'🇲🇦' },
+  { code:'IST', name:'Istanbul Aéroport', country:'Turquie', flag:'🇹🇷' },
+  { code:'ADD', name:'Addis-Abeba Bole', country:'Éthiopie', flag:'🇪🇹' },
+  { code:'LOS', name:'Lagos Murtala Muhammed', country:'Nigeria', flag:'🇳🇬' },
+  { code:'ACC', name:'Accra Kotoka', country:'Ghana', flag:'🇬🇭' },
+  { code:'JNB', name:'Johannesburg O.R. Tambo', country:'Afrique du Sud', flag:'🇿🇦' },
+  { code:'NYC', name:'New York JFK', country:'États-Unis', flag:'🇺🇸' },
+]
+
+function showAC(field, val) {
+  const list = document.getElementById(`ac-${field}`)
+  if (!val || val.length < 1) { list.classList.remove('open'); return }
+  const matches = airports.filter(a =>
+    a.name.toLowerCase().includes(val.toLowerCase()) ||
+    a.code.toLowerCase().includes(val.toLowerCase()) ||
+    a.country.toLowerCase().includes(val.toLowerCase())
+  ).slice(0, 6)
+
+  if (!matches.length) { list.classList.remove('open'); return }
+  list.innerHTML = matches.map(a => `
+    <div class="ac-item" onclick="selectAC('${field}','${a.name} (${a.code})')">
+      <iconify-icon icon="solar:map-point-bold-duotone"></iconify-icon>
+      <div>
+        <div style="font-weight:600">${a.flag} ${a.name}</div>
+        <div style="font-size:11px;color:var(--gray-400)">${a.country}</div>
+      </div>
+      <span class="ac-code">${a.code}</span>
+    </div>
+  `).join('')
+  list.classList.add('open')
+}
+
+function selectAC(field, val) {
+  document.getElementById(`fsb-${field === 'from' ? 'from' : 'to'}`).value = val
+  document.getElementById(`ac-${field}`).classList.remove('open')
+}
+
+// ═══════════════════════════════════════════════
+// PASSAGERS
+// ═══════════════════════════════════════════════
+function togglePax() { document.getElementById('pax-drop').classList.toggle('open') }
+function chPax(k, d) {
+  if (k === 'a') pax.a = Math.max(1, pax.a + d)
+  if (k === 'c') pax.c = Math.max(0, pax.c + d)
+  if (k === 'b') pax.b = Math.max(0, pax.b + d)
+  document.getElementById(`pn-${k}`).textContent = pax[k]
+}
+function setClass(btn, cls) {
+  travelClass = cls
+  document.querySelectorAll('.class-btn').forEach(b => b.classList.remove('active'))
+  btn.classList.add('active')
+}
+function applyPax() {
+  const total = pax.a + pax.c + pax.b
+  document.getElementById('fsb-pax').value = `${total} voyageur${total > 1 ? 's' : ''} · ${travelClass}`
+  document.getElementById('pax-drop').classList.remove('open')
+}
+
+// ═══════════════════════════════════════════════
+// TRIP TYPE
+// ═══════════════════════════════════════════════
+function setTrip(btn, type) {
+  document.querySelectorAll('.fsb-tab').forEach(b => b.classList.remove('active'))
+  btn.classList.add('active')
+  document.getElementById('ret-field').style.display = type === 'A' ? 'none' : ''
+}
+
+// ═══════════════════════════════════════════════
+// SWAP
+// ═══════════════════════════════════════════════
+function swapLoc() {
+  const a = document.getElementById('fsb-from')
+  const b = document.getElementById('fsb-to')
+  const tmp = a.value; a.value = b.value; b.value = tmp
+}
+
+// ═══════════════════════════════════════════════
+// RECHERCHE
+// ═══════════════════════════════════════════════
+function searchFlights() {
+  const btn = document.querySelector('.fsb-btn')
+  btn.innerHTML = '<iconify-icon icon="solar:refresh-bold" style="animation:spin 1s linear infinite"></iconify-icon> Recherche...'
+  btn.disabled = true
+  setTimeout(() => {
+    btn.innerHTML = '<iconify-icon icon="solar:magnifer-bold"></iconify-icon> Rechercher'
+    btn.disabled = false
+    filterF()
+  }, 1200)
+}
+
+// ═══════════════════════════════════════════════
+// FILTRES
+// ═══════════════════════════════════════════════
+function filterF() {
+  const priceMax = parseInt(document.getElementById('fl-price-range').value)
+  filteredFlights = flightsData.filter(f => f.price <= priceMax)
+  renderFlights(filteredFlights)
+}
+
+function updateFLPrice(val) {
+  document.getElementById('fl-price-lbl').textContent = parseInt(val).toLocaleString('fr-FR') + ' FCFA'
+  filterF()
+}
+
+function resetFilters() {
+  document.getElementById('fl-price-range').value = 900000
+  document.getElementById('fl-price-lbl').textContent = '900 000 FCFA'
+  document.querySelectorAll('.filter-checks input').forEach(i => i.checked = true)
+  filteredFlights = [...flightsData]
+  renderFlights(filteredFlights)
+}
+
+// ═══════════════════════════════════════════════
+// TRI
+// ═══════════════════════════════════════════════
+function sortF(val) {
+  const s = [...filteredFlights]
+  if (val === 'pa') s.sort((a,b) => a.price - b.price)
+  if (val === 'pd') s.sort((a,b) => b.price - a.price)
+  if (val === 'dur') s.sort((a,b) => a.dur.localeCompare(b.dur))
+  if (val === 'dep') s.sort((a,b) => a.dep.localeCompare(b.dep))
+  renderFlights(s)
+}
+
+// ═══════════════════════════════════════════════
+// RENDU VOLS
+// ═══════════════════════════════════════════════
+function renderFlights(list) {
+  const el = document.getElementById('fl-results')
+  const empty = document.getElementById('fl-empty')
+  document.getElementById('fl-count').textContent = `${list.length} vol${list.length > 1 ? 's' : ''} trouvé${list.length > 1 ? 's' : ''}`
+
+  if (!list.length) { el.innerHTML = ''; empty.style.display = 'flex'; return }
+  empty.style.display = 'none'
+
+  el.innerHTML = list.map(f => `
+    <div class="fl-card" onclick="showDetail('${f.id}')">
+      <div class="fl-card-main">
+        <div class="fl-airline">
+          <div class="fl-logo" style="background:${f.color}">
+            <iconify-icon icon="${f.logo}" style="font-size:22px;color:${f.iconColor}"></iconify-icon>
+          </div>
+          <div>
+            <div class="fl-aname">${f.airline}</div>
+            <div class="fl-anum">${f.num} · ${f.aircraft}</div>
+          </div>
+        </div>
+
+        <div class="fl-route">
+          <div class="fl-tb">
+            <div class="fl-time">${f.dep}</div>
+            <div class="fl-ap">${f.from} · ${f.fromCity}</div>
+          </div>
+          <div class="fl-line">
+            <div class="fl-dur">${f.dur}</div>
+            <div class="fl-bar"><div class="fl-dot" style="background:${f.stopColor}"></div></div>
+            <div class="fl-stop" style="color:${f.stopColor}">${f.stopLabel}</div>
+          </div>
+          <div class="fl-tb">
+            <div class="fl-time">${f.arr}</div>
+            <div class="fl-ap">${f.to} · ${f.toCity}</div>
+          </div>
+        </div>
+
+        <div class="fl-price-box">
+          <div class="fl-price">${f.price.toLocaleString('fr-FR')}</div>
+          <div class="fl-punit">FCFA / pers.</div>
+          <button class="fl-sel-btn" onclick="event.stopPropagation();showDetail('${f.id}')">
+            <iconify-icon icon="solar:cursor-bold-duotone"></iconify-icon>Sélectionner
+          </button>
+        </div>
+      </div>
+      <div class="fl-extras">
+        ${f.baggage ? `<span class="fl-extra"><iconify-icon icon="solar:bag-bold-duotone" style="color:var(--green)"></iconify-icon>Bagage inclus</span>` : `<span class="fl-extra"><iconify-icon icon="solar:bag-bold-duotone" style="color:var(--gray-400)"></iconify-icon>Bagage non inclus</span>`}
+        ${f.meal ? `<span class="fl-extra"><iconify-icon icon="solar:cup-hot-bold-duotone" style="color:var(--green)"></iconify-icon>Repas inclus</span>` : ''}
+        <span class="fl-extra"><iconify-icon icon="solar:shield-check-bold-duotone" style="color:var(--green)"></iconify-icon>Annulation gratuite 24h</span>
+        <span class="fl-extra" style="margin-left:auto;color:var(--orange);font-weight:600"><iconify-icon icon="solar:fire-bold-duotone" style="color:var(--orange)"></iconify-icon>Voir les détails →</span>
+      </div>
+    </div>
+  `).join('')
+}
+
+// ═══════════════════════════════════════════════
+// DÉTAIL VOL
+// ═══════════════════════════════════════════════
+function showDetail(id) {
+  selectedFlight = flightsData.find(f => f.id === id)
+  if (!selectedFlight) return
+  const f = selectedFlight
+
+  document.getElementById('view-list').style.display = 'none'
+  document.getElementById('view-detail').style.display = 'block'
+  window.scrollTo(0, 0)
+
+  document.getElementById('det-title').textContent = `Détails — ${f.airline} ${f.num}`
+
+  document.getElementById('det-route').innerHTML = `
+    <div>
+      <div class="fdc-time">${f.dep}</div>
+      <div class="fdc-code">${f.from}</div>
+      <div class="fdc-city">${f.fromCity}</div>
+    </div>
+    <div style="text-align:center">
+      <div class="fdc-arrow"><iconify-icon icon="solar:arrow-right-bold-duotone"></iconify-icon></div>
+      <div style="font-size:12px;color:var(--gray-400)">${f.dur}</div>
+      <div style="font-size:12px;font-weight:700;color:${f.stopColor}">${f.stopLabel}</div>
+    </div>
+    <div>
+      <div class="fdc-time">${f.arr}</div>
+      <div class="fdc-code">${f.to}</div>
+      <div class="fdc-city">${f.toCity}</div>
+    </div>
+  `
+
+  document.getElementById('det-infos').innerHTML = `
+    <div class="fdc-info"><iconify-icon icon="solar:airplane-bold-duotone" style="color:var(--orange)"></iconify-icon>${f.airline} · ${f.num}</div>
+    <div class="fdc-info"><iconify-icon icon="solar:widget-bold-duotone" style="color:var(--orange)"></iconify-icon>${f.aircraft}</div>
+    <div class="fdc-info"><iconify-icon icon="solar:user-bold-duotone" style="color:var(--orange)"></iconify-icon>${travelClass}</div>
+    ${f.baggage ? `<div class="fdc-info"><iconify-icon icon="solar:bag-bold-duotone" style="color:var(--green)"></iconify-icon>1 bagage cabine inclus</div>` : ''}
+    ${f.meal ? `<div class="fdc-info"><iconify-icon icon="solar:cup-hot-bold-duotone" style="color:var(--green)"></iconify-icon>Repas inclus</div>` : ''}
+  `
+
+  document.getElementById('sum-vol').textContent = f.price.toLocaleString('fr-FR') + ' FCFA'
+  document.getElementById('opt-soute').checked = false
+  document.getElementById('opt-assur').checked = false
+  document.getElementById('opt-seat').checked = false
+  updateTotal()
+
+  // Sauvegarde dans localStorage pour checkout
+  localStorage.setItem('fly360_selected_flight', JSON.stringify(f))
+}
+
+function showList() {
+  document.getElementById('view-detail').style.display = 'none'
+  document.getElementById('view-list').style.display = 'block'
+  window.scrollTo(0, 0)
+}
+
+function updateTotal() {
+  if (!selectedFlight) return
+  let total = selectedFlight.price
+  const soute = document.getElementById('opt-soute').checked
+  const assur = document.getElementById('opt-assur').checked
+  const seat  = document.getElementById('opt-seat').checked
+
+  if (soute) total += 15000
+  if (assur) total += 6500
+  if (seat)  total += 5000
+
+  document.getElementById('sum-soute-row').style.display = soute ? 'flex' : 'none'
+  document.getElementById('sum-assur-row').style.display = assur ? 'flex' : 'none'
+  document.getElementById('sum-seat-row').style.display  = seat  ? 'flex' : 'none'
+  document.getElementById('sum-total').textContent = total.toLocaleString('fr-FR') + ' FCFA'
+
+  localStorage.setItem('fly360_total', total)
+}
+
+// ═══════════════════════════════════════════════
+// NEWSLETTER
+// ═══════════════════════════════════════════════
+function subNewsletter(e) {
+  e.preventDefault()
+  const btn = e.target.querySelector('button')
+  btn.innerHTML = '<iconify-icon icon="solar:check-circle-bold-duotone"></iconify-icon> Activé !'
+  btn.style.background = '#22C55E'
+  setTimeout(() => { btn.innerHTML = '<iconify-icon icon="solar:arrow-right-bold"></iconify-icon>Activer'; btn.style.background = ''; e.target.reset() }, 3000)
+}
+
+// ═══════════════════════════════════════════════
+// DARK MODE & MENU
+// ═══════════════════════════════════════════════
+const darkBtn = document.getElementById('dark-toggle')
+if (localStorage.getItem('fly360-theme') === 'dark') document.body.classList.add('dark')
+darkBtn?.addEventListener('click', () => {
+  const d = document.body.classList.toggle('dark')
+  localStorage.setItem('fly360-theme', d ? 'dark' : 'light')
+  document.getElementById('dark-icon').setAttribute('icon', d ? 'solar:sun-bold-duotone' : 'solar:moon-bold-duotone')
+})
+
+function toggleMenu() {
+  document.getElementById('mobile-menu').classList.toggle('open')
+}
+
+// Fermer dropdowns
+document.addEventListener('click', e => {
+  if (!e.target.closest('.fsb-field')) {
+    document.querySelectorAll('.ac-list, .pax-drop').forEach(el => el.classList.remove('open'))
+  }
+})
+
+window.addEventListener('scroll', () => {
+  document.getElementById('header').classList.toggle('scrolled', window.scrollY > 8)
+})
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  // Lire les params URL
+  const params = new URLSearchParams(location.search)
+  if (params.get('from')) document.getElementById('fsb-from').value = params.get('from')
+  if (params.get('to'))   document.getElementById('fsb-to').value   = params.get('to')
+
+  // Date par défaut = aujourd'hui + 7j
+  const today = new Date()
+  const dep = new Date(today); dep.setDate(today.getDate() + 7)
+  const ret = new Date(today); ret.setDate(today.getDate() + 14)
+  document.getElementById('fsb-dep').value = dep.toISOString().split('T')[0]
+  document.getElementById('fsb-ret').value = ret.toISOString().split('T')[0]
+
+  renderFlights(flightsData)
+})
+
+// Style spin
+const s = document.createElement('style')
+s.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}'
+document.head.appendChild(s)
+</script>
+
+</body>
+</html>

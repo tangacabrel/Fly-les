@@ -1,0 +1,1580 @@
+cat > /home/claude/fly360-web/hotels.html << 'HOTELEOF'
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hôtels — Fly360</title>
+  <link rel="icon" href="images/logo/logo.png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/shared.css">
+  <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
+
+  <!-- ACCESSIBILITÉ MALVOYANTS -->
+  <style>
+    :focus-visible{outline:3px solid var(--orange);outline-offset:3px;border-radius:4px}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .skip-link{position:absolute;top:-100px;left:0;background:var(--orange);color:white;padding:10px 20px;border-radius:0 0 8px 0;font-weight:700;font-size:14px;z-index:9999;transition:top .2s}
+    .skip-link:focus{top:0}
+    [aria-label],[aria-describedby],[role]{cursor:pointer}
+
+    /* ══ HERO ══ */
+    .hotels-hero{background:linear-gradient(135deg,#0f172a,#1e293b);padding:28px 0 0;border-bottom:3px solid var(--orange)}
+    .hotels-hero-title{display:flex;align-items:center;gap:10px;font-size:28px;font-weight:800;color:white;margin-bottom:6px}
+    .hotels-hero-sub{font-size:14px;color:#94a3b8;margin-bottom:20px}
+
+    /* ══ SEARCH BAR ══ */
+    .hsbox{background:white;border-radius:12px;padding:20px 24px;box-shadow:0 20px 50px rgba(0,0,0,.15);margin-bottom:-1px}
+    body.dark .hsbox{background:#1e293b;border:1px solid #334155}
+    .hsb-row{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr auto;gap:10px;align-items:end}
+    .hsb-field{display:flex;flex-direction:column;gap:4px}
+    .hsb-field label{font-size:10px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:5px}
+    .hsb-field input,.hsb-field select{padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:13px;color:var(--gray-800);transition:all .2s;width:100%}
+    body.dark .hsb-field input,body.dark .hsb-field select{background:#0f172a;border-color:#334155;color:#e2e8f0}
+    .hsb-field input:focus,.hsb-field select:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(249,115,22,.08);outline:none}
+    .hsb-btn{display:flex;align-items:center;gap:7px;background:var(--orange);color:white;padding:11px 22px;border-radius:8px;font-size:14px;font-weight:700;height:44px;transition:all .2s;cursor:pointer;border:none;white-space:nowrap}
+    .hsb-btn:hover{background:var(--orange-dark);transform:translateY(-1px)}
+
+    /* ══ LAYOUT ══ */
+    .hotels-layout{display:grid;grid-template-columns:280px 1fr;gap:28px;padding:28px 0 48px;align-items:start}
+
+    /* ══ SIDEBAR ══ */
+    .ht-sidebar{background:white;border-radius:12px;border:1px solid var(--gray-100);padding:20px;position:sticky;top:88px}
+    body.dark .ht-sidebar{background:#1e293b;border-color:#334155}
+    .ht-sidebar-title{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--gray-800);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--gray-100)}
+    body.dark .ht-sidebar-title{color:#f1f5f9;border-color:#334155}
+    .stars-filter{display:flex;flex-direction:column;gap:4px}
+    .star-opt{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;font-size:13px;color:var(--gray-600);cursor:pointer;transition:all .2s;border:1.5px solid transparent}
+    body.dark .star-opt{color:#94a3b8}
+    .star-opt:hover,.star-opt.active{background:var(--orange-light);color:var(--orange);border-color:var(--orange-border)}
+    .star-opt input{accent-color:var(--orange)}
+
+    /* ══ TOOLBAR ══ */
+    .ht-toolbar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:white;border-radius:8px;border:1px solid var(--gray-100);margin-bottom:16px;flex-wrap:wrap;gap:10px}
+    body.dark .ht-toolbar{background:#1e293b;border-color:#334155}
+    .ht-count{font-size:14px;font-weight:700;color:var(--gray-800)}
+    body.dark .ht-count{color:#f1f5f9}
+    .ht-sort{padding:7px 12px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:12px;color:var(--gray-700);cursor:pointer}
+    body.dark .ht-sort{background:#0f172a;border-color:#334155;color:#e2e8f0}
+
+    /* ══ HOTEL LIST CARD ══ */
+    .hotel-list-card{display:grid;grid-template-columns:280px 1fr;background:white;border-radius:12px;border:1px solid var(--gray-100);overflow:hidden;margin-bottom:16px;transition:all .3s;cursor:pointer}
+    body.dark .hotel-list-card{background:#1e293b;border-color:#334155}
+    .hotel-list-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.1);border-color:var(--orange-border)}
+    .hlc-img{background-size:cover;background-position:center;position:relative;min-height:220px}
+    .hlc-badge-top{position:absolute;top:10px;left:10px;display:flex;flex-direction:column;gap:6px}
+    .hlc-badge{font-size:10px;font-weight:700;padding:4px 10px;border-radius:10px;color:white}
+    .hlc-avail{position:absolute;top:10px;right:10px;font-size:10px;font-weight:700;padding:4px 10px;border-radius:10px}
+    .hlc-avail.ok{background:rgba(240,253,244,.95);color:#15803d}
+    .hlc-avail.no{background:rgba(255,241,242,.95);color:#b91c1c}
+    .hlc-promo{position:absolute;bottom:10px;left:10px;background:rgba(239,68,68,.9);color:white;font-size:10px;font-weight:700;padding:4px 10px;border-radius:8px}
+    .hlc-body{padding:18px 20px;display:flex;flex-direction:column;gap:10px}
+    .hlc-header{display:flex;justify-content:space-between;align-items:flex-start}
+    .hlc-name{font-size:18px;font-weight:800;color:var(--gray-900);margin-bottom:5px}
+    body.dark .hlc-name{color:#f1f5f9}
+    .hlc-loc{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--gray-400)}
+    .hlc-rating{display:flex;align-items:center;gap:8px}
+    .hlc-score{background:#0f4c3a;color:white;font-size:13px;font-weight:700;padding:4px 10px;border-radius:8px}
+    .hlc-reviews{font-size:12px;color:var(--gray-400)}
+    .hlc-stars{color:var(--yellow);font-size:13px;letter-spacing:1px}
+    .hlc-amenities{display:flex;flex-wrap:wrap;gap:6px}
+    .hlc-am{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--gray-600);background:var(--gray-50);padding:3px 9px;border-radius:6px}
+    body.dark .hlc-am{background:#334155;color:#94a3b8}
+    .hlc-desc{font-size:13px;color:var(--gray-500);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .hlc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--gray-100);margin-top:auto}
+    body.dark .hlc-footer{border-color:#334155}
+    .hlc-price{font-size:20px;font-weight:800;color:var(--orange)}
+    .hlc-price small{display:block;font-size:11px;font-weight:400;color:var(--gray-400)}
+    .hlc-price .old-price{font-size:13px;text-decoration:line-through;color:var(--gray-400);font-weight:400}
+    .hlc-btns{display:flex;gap:8px}
+    .hlc-view-btn{display:flex;align-items:center;gap:6px;background:var(--orange);color:white;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:700;transition:all .2s;cursor:pointer;border:none}
+    .hlc-view-btn:hover{background:var(--orange-dark);transform:translateY(-1px)}
+    .hlc-save-btn{width:38px;height:38px;border-radius:8px;border:1.5px solid var(--gray-200);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--gray-400);transition:all .2s;cursor:pointer;background:none}
+    .hlc-save-btn:hover,.hlc-save-btn.saved{border-color:var(--red);color:var(--red);background:var(--red-light)}
+    .hlc-guarantees{display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--green-dark)}
+
+    /* ══ DETAIL HOTEL ══ */
+    .hotel-detail{max-width:1000px;margin:0 auto;padding:0 24px 60px}
+    .hd-gallery{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:220px 160px;gap:8px;border-radius:12px;overflow:hidden;margin-bottom:28px}
+    .hd-gallery .g-main{grid-row:1/3;background-size:cover;background-position:center;position:relative;cursor:pointer}
+    .hd-gallery .g-sub{background-size:cover;background-position:center;cursor:pointer;position:relative}
+    .g-main:hover::after,.g-sub:hover::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.2)}
+    .hd-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:16px}
+    .hd-name{font-size:28px;font-weight:800;color:var(--gray-900);margin-bottom:8px}
+    body.dark .hd-name{color:#f1f5f9}
+    .hd-meta{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+    .hd-price-box{text-align:right}
+    .hd-price{font-size:28px;font-weight:800;color:var(--orange)}
+    .hd-price small{display:block;font-size:12px;color:var(--gray-400);font-weight:400}
+    .hd-book-btn{display:flex;align-items:center;gap:8px;background:var(--orange);color:white;padding:13px 28px;border-radius:10px;font-size:15px;font-weight:700;transition:all .2s;cursor:pointer;border:none;margin-top:10px;text-decoration:none}
+    .hd-book-btn:hover{background:var(--orange-dark);transform:translateY(-2px)}
+    .hd-tabs{display:flex;gap:3px;background:var(--gray-50);padding:3px;border-radius:10px;margin-bottom:24px}
+    body.dark .hd-tabs{background:#0f172a}
+    .hd-tab{padding:8px 20px;border-radius:8px;font-size:13px;font-weight:600;color:var(--gray-500);cursor:pointer;transition:all .2s}
+    .hd-tab.active{background:var(--orange);color:white}
+    .tab-content{display:none}
+    .tab-content.active{display:block}
+
+    /* ÉQUIPEMENTS */
+    .amenities-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .am-item{display:flex;align-items:center;gap:10px;padding:12px;background:var(--gray-50);border-radius:8px;font-size:13px;color:var(--gray-700)}
+    body.dark .am-item{background:#334155;color:#e2e8f0}
+    .am-item iconify-icon{font-size:20px;color:var(--orange);flex-shrink:0}
+
+    /* CHAMBRES */
+    .rooms-grid{display:grid;grid-template-columns:1fr;gap:16px}
+    .room-card{background:white;border:1px solid var(--gray-100);border-radius:12px;padding:18px 20px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;transition:all .2s}
+    body.dark .room-card{background:#1e293b;border-color:#334155}
+    .room-card:hover{border-color:var(--orange-border);box-shadow:var(--shadow)}
+    .room-name{font-size:16px;font-weight:700;color:var(--gray-800);margin-bottom:6px}
+    body.dark .room-name{color:#f1f5f9}
+    .room-feats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+    .room-feat{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--green-dark);background:var(--green-light);padding:3px 8px;border-radius:6px}
+    .room-price{font-size:22px;font-weight:800;color:var(--orange);text-align:right}
+    .room-price small{display:block;font-size:11px;font-weight:400;color:var(--gray-400)}
+    .room-book-btn{display:flex;align-items:center;gap:6px;background:var(--orange);color:white;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;transition:all .2s;cursor:pointer;border:none;margin-top:8px}
+    .room-book-btn:hover{background:var(--orange-dark)}
+
+    /* PROMO / JEUX */
+    .promo-banner{background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:12px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
+    .promo-title{font-size:18px;font-weight:800;color:white;margin-bottom:5px}
+    .promo-sub{font-size:13px;color:rgba(255,255,255,.8)}
+    .promo-btn{background:white;color:#7c3aed;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .2s;white-space:nowrap;flex-shrink:0}
+    .promo-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.2)}
+    .game-card{background:linear-gradient(135deg,#f59e0b,#f97316);border-radius:12px;padding:20px 24px;cursor:pointer;transition:all .2s;color:white;margin-bottom:16px}
+    .game-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(249,115,22,.3)}
+    .game-title{font-size:18px;font-weight:800;margin-bottom:5px}
+    .game-desc{font-size:13px;opacity:.9}
+    .game-spin{width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:36px;cursor:pointer;transition:transform .2s;margin:0 auto}
+
+    /* MODAL RÉSERVATION */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:3000;display:none;backdrop-filter:blur(4px)}
+    .modal-overlay.active{display:block}
+    .booking-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.95);width:90%;max-width:640px;max-height:90vh;overflow-y:auto;background:white;border-radius:16px;z-index:3001;display:none;box-shadow:0 25px 60px rgba(0,0,0,.2);transition:transform .2s}
+    body.dark .booking-modal{background:#1e293b}
+    .booking-modal.active{display:block;transform:translate(-50%,-50%) scale(1)}
+    .bm-header{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid var(--gray-100);position:sticky;top:0;background:white;z-index:2}
+    body.dark .bm-header{background:#1e293b;border-color:#334155}
+    .bm-header h2{font-size:17px;font-weight:800;color:var(--gray-900)}
+    body.dark .bm-header h2{color:#f1f5f9}
+    .bm-close{font-size:22px;color:var(--gray-400);cursor:pointer;background:none;border:none;transition:color .2s}
+    .bm-close:hover{color:var(--red)}
+    .bm-body{padding:20px 22px}
+    .bm-steps{display:flex;align-items:center;gap:0;margin-bottom:24px}
+    .bm-step{display:flex;align-items:center;gap:8px;flex:1;font-size:12px;font-weight:600}
+    .bm-step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+    .bm-step.done .bm-step-num{background:var(--green);color:white}
+    .bm-step.active .bm-step-num{background:var(--orange);color:white}
+    .bm-step.pending .bm-step-num{background:var(--gray-200);color:var(--gray-500)}
+    .bm-step-line{flex:1;height:2px;background:var(--gray-200);margin:0 6px}
+    .bm-step-line.done{background:var(--green)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .form-field{display:flex;flex-direction:column;gap:5px}
+    .form-field label{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.06em}
+    .form-field input,.form-field select{padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:13px;color:var(--gray-800);transition:all .2s}
+    body.dark .form-field input,body.dark .form-field select{background:#0f172a;border-color:#334155;color:#e2e8f0}
+    .form-field input:focus,.form-field select:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(249,115,22,.08);outline:none}
+    .bm-total{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--orange-light);border-radius:8px;border:1px solid var(--orange-border);margin:16px 0}
+    .bm-total span{font-size:13px;font-weight:600;color:var(--orange)}
+    .bm-total strong{font-size:20px;font-weight:800;color:var(--orange-dark)}
+    .bm-submit{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--orange);color:white;padding:14px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:all .2s}
+    .bm-submit:hover{background:var(--orange-dark);transform:translateY(-1px)}
+    .bm-secure{display:flex;align-items:center;justify-content:center;gap:5px;font-size:11px;color:var(--gray-400);margin-top:8px}
+
+    /* QR CODE MODAL */
+    .qr-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:440px;background:white;border-radius:16px;z-index:4000;display:none;box-shadow:0 25px 60px rgba(0,0,0,.2);padding:32px;text-align:center}
+    body.dark .qr-modal{background:#1e293b}
+    .qr-modal.active{display:block}
+    .qr-title{font-size:20px;font-weight:800;color:var(--gray-900);margin-bottom:8px}
+    body.dark .qr-title{color:#f1f5f9}
+    .qr-sub{font-size:13px;color:var(--gray-500);margin-bottom:24px}
+    .qr-code-box{width:200px;height:200px;margin:0 auto 20px;border:3px solid var(--orange);border-radius:12px;display:flex;align-items:center;justify-content:center;background:white;position:relative;overflow:hidden}
+    .qr-code-svg{width:180px;height:180px}
+    .qr-steps{display:flex;flex-direction:column;gap:10px;text-align:left;margin-bottom:24px}
+    .qr-step{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--gray-600)}
+    body.dark .qr-step{color:#94a3b8}
+    .qr-step-num{width:24px;height:24px;background:var(--orange);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+    .qr-verify-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--orange);color:white;padding:13px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:all .2s}
+    .qr-verify-btn:hover{background:var(--orange-dark)}
+    .qr-close{position:absolute;top:14px;right:14px;font-size:22px;color:var(--gray-400);cursor:pointer;background:none;border:none}
+
+    /* ALERTE ACCESSIBILITÉ */
+    .a11y-bar{background:#1e3a5f;padding:8px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .a11y-btn{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);color:white;border:1px solid rgba(255,255,255,.2);padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+    .a11y-btn:hover{background:var(--orange);border-color:var(--orange)}
+    .a11y-btn.active{background:var(--orange);border-color:var(--orange)}
+
+    /* ALERTS SECTION */
+    .alerts-box{background:var(--orange-light);border:1px solid var(--orange-border);border-radius:12px;padding:16px 20px;margin-bottom:20px}
+    .alert-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--orange-border)}
+    .alert-item:last-child{border-bottom:none;padding-bottom:0}
+    .alert-item iconify-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+    .alert-item-content{flex:1}
+    .alert-item-title{font-size:13px;font-weight:700;color:var(--gray-800);margin-bottom:2px}
+    body.dark .alert-item-title{color:#f1f5f9}
+    .alert-item-desc{font-size:12px;color:var(--gray-500)}
+    .alert-dismiss{font-size:16px;color:var(--gray-400);cursor:pointer;background:none;border:none;flex-shrink:0}
+    .alert-dismiss:hover{color:var(--red)}
+
+    /* EMPTY STATE */
+    .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;gap:12px}
+    .empty-state h3{font-size:20px;font-weight:700;color:var(--gray-600)}
+    .empty-state p{font-size:14px;color:var(--gray-400)}
+
+    @media(max-width:1024px){.hotels-layout{grid-template-columns:1fr}.ht-sidebar{position:static}}
+    @media(max-width:768px){.hotel-list-card{grid-template-columns:1fr}.hlc-img{min-height:200px}.hsb-row{grid-template-columns:1fr}.amenities-grid{grid-template-columns:1fr 1fr}.form-row{grid-template-columns:1fr}.hd-gallery{grid-template-columns:1fr;grid-template-rows:200px 120px 120px}}
+  </style>
+</head>
+<body>
+
+<!-- ACCESSIBILITÉ — LIEN SKIP -->
+<a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+<!-- BARRE ACCESSIBILITÉ MALVOYANTS -->
+<div class="a11y-bar" role="toolbar" aria-label="Options d'accessibilité">
+  <span style="color:rgba(255,255,255,.7);font-size:12px;font-weight:600">
+    <iconify-icon icon="solar:eye-bold-duotone" style="color:var(--orange)"></iconify-icon>
+    Accessibilité :
+  </span>
+  <button class="a11y-btn" onclick="toggleA11y('font')" id="btn-font" aria-label="Agrandir le texte">
+    <iconify-icon icon="solar:text-bold-duotone"></iconify-icon>Texte +
+  </button>
+  <button class="a11y-btn" onclick="toggleA11y('contrast')" id="btn-contrast" aria-label="Activer contraste élevé">
+    <iconify-icon icon="solar:sun-bold-duotone"></iconify-icon>Contraste
+  </button>
+  <button class="a11y-btn" onclick="toggleA11y('dyslexia')" id="btn-dyslexia" aria-label="Mode dyslexie">
+    <iconify-icon icon="solar:book-2-bold-duotone"></iconify-icon>Dyslexie
+  </button>
+  <button class="a11y-btn" onclick="speakPage()" aria-label="Lire la page à voix haute">
+    <iconify-icon icon="solar:volume-loud-bold-duotone"></iconify-icon>Lire
+  </button>
+  <button class="a11y-btn" onclick="resetA11y()" aria-label="Réinitialiser l'accessibilité">
+    <iconify-icon icon="solar:restart-bold"></iconify-icon>Reset
+  </button>
+</div>
+
+
+<!-- ══ HEADER ══ -->
+<header class="header" id="header" role="banner">
+  <div class="header-inner container">
+    <a href="index.html" class="logo" aria-label="Fly360 - Accueil">
+      <img src="images/logo/logo.png" alt="Logo Fly360">
+    </a>
+    <nav class="nav" role="navigation" aria-label="Navigation principale">
+      <a href="index.html" class="nav-link" aria-label="Accueil"><iconify-icon icon="solar:home-2-bold-duotone" aria-hidden="true"></iconify-icon>Accueil</a>
+      <a href="flights.html" class="nav-link" aria-label="Vols"><iconify-icon icon="solar:airplane-bold-duotone" aria-hidden="true"></iconify-icon>Vols</a>
+      <a href="hotels.html" class="nav-link active" aria-label="Hôtels - page active" aria-current="page"><iconify-icon icon="solar:buildings-bold-duotone" aria-hidden="true"></iconify-icon>Hôtels</a>
+      <a href="cars.html" class="nav-link" aria-label="Voitures"><iconify-icon icon="solar:car-bold-duotone" aria-hidden="true"></iconify-icon>Voitures</a>
+      <a href="planner.html" class="nav-link" aria-label="Planificateur"><iconify-icon icon="solar:calendar-bold-duotone" aria-hidden="true"></iconify-icon>Planificateur</a>
+      <a href="contact.html" class="nav-link" aria-label="Contact"><iconify-icon icon="solar:chat-round-dots-bold-duotone" aria-hidden="true"></iconify-icon>Contact</a>
+    </nav>
+    <div class="header-actions">
+      <div class="lang-btn" role="button" aria-label="Changer langue FR/XAF"><iconify-icon icon="solar:global-bold-duotone" aria-hidden="true"></iconify-icon>FR / XAF</div>
+      <button class="icon-btn" id="dark-toggle" aria-label="Basculer mode sombre/clair"><iconify-icon icon="solar:moon-bold-duotone" id="dark-icon" aria-hidden="true"></iconify-icon></button>
+      <button class="icon-btn" style="position:relative" aria-label="3 notifications" aria-live="polite"><iconify-icon icon="solar:bell-bing-bold-duotone" aria-hidden="true"></iconify-icon><span class="notif-badge" aria-hidden="true">3</span></button>
+      <a href="login.html" class="btn-login" aria-label="Se connecter"><iconify-icon icon="solar:login-bold-duotone" aria-hidden="true"></iconify-icon>Connexion</a>
+      <a href="register.html" class="btn-signup" aria-label="Créer un compte"><iconify-icon icon="solar:user-plus-bold-duotone" aria-hidden="true"></iconify-icon>S'inscrire</a>
+      <button class="burger" onclick="toggleMenu()" aria-label="Menu" aria-expanded="false" id="burger-btn"><iconify-icon icon="solar:hamburger-menu-bold-duotone" style="font-size:22px" aria-hidden="true"></iconify-icon></button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobile-menu" role="navigation" aria-label="Menu mobile">
+    <a href="index.html" class="nav-link"><iconify-icon icon="solar:home-2-bold-duotone"></iconify-icon>Accueil</a>
+    <a href="flights.html" class="nav-link"><iconify-icon icon="solar:airplane-bold-duotone"></iconify-icon>Vols</a>
+    <a href="hotels.html" class="nav-link active"><iconify-icon icon="solar:buildings-bold-duotone"></iconify-icon>Hôtels</a>
+    <a href="cars.html" class="nav-link"><iconify-icon icon="solar:car-bold-duotone"></iconify-icon>Voitures</a>
+    <a href="planner.html" class="nav-link"><iconify-icon icon="solar:calendar-bold-duotone"></iconify-icon>Planificateur</a>
+    <a href="contact.html" class="nav-link"><iconify-icon icon="solar:chat-round-dots-bold-duotone"></iconify-icon>Contact</a>
+    <div class="mobile-menu-btns">
+      <a href="login.html" class="btn-login">Connexion</a>
+      <a href="register.html" class="btn-signup">S'inscrire</a>
+    </div>
+  </div>
+</header>
+
+
+<!-- ══════════════════════════════════
+     VUE 1 : LISTE HÔTELS
+══════════════════════════════════ -->
+<div id="view-list">
+
+  <div class="hotels-hero" role="region" aria-label="Recherche d'hôtels">
+    <div class="container">
+      <div class="page-breadcrumb" aria-label="Fil d'Ariane">
+        <a href="index.html">Accueil</a>
+        <iconify-icon icon="solar:alt-arrow-right-bold" aria-hidden="true"></iconify-icon>
+        <span aria-current="page">Hôtels</span>
+      </div>
+      <h1 class="hotels-hero-title">
+        <iconify-icon icon="solar:buildings-bold-duotone" style="color:var(--orange)" aria-hidden="true"></iconify-icon>
+        Recherche d'hôtels
+      </h1>
+      <p class="hotels-hero-sub">20 établissements · Prix garantis · Cameroun & Monde entier</p>
+
+      <div class="hsbox" role="search" aria-label="Rechercher un hôtel">
+        <div class="hsb-row">
+          <div class="hsb-field">
+            <label for="hs-dest"><iconify-icon icon="solar:map-point-bold-duotone" aria-hidden="true"></iconify-icon>Destination</label>
+            <input type="text" id="hs-dest" placeholder="Ville, pays ou hôtel..." aria-label="Destination">
+          </div>
+          <div class="hsb-field">
+            <label for="hs-in"><iconify-icon icon="solar:calendar-bold-duotone" aria-hidden="true"></iconify-icon>Check-in</label>
+            <input type="date" id="hs-in" aria-label="Date d'arrivée">
+          </div>
+          <div class="hsb-field">
+            <label for="hs-out"><iconify-icon icon="solar:calendar-mark-bold-duotone" aria-hidden="true"></iconify-icon>Check-out</label>
+            <input type="date" id="hs-out" aria-label="Date de départ">
+          </div>
+          <div class="hsb-field">
+            <label for="hs-guests"><iconify-icon icon="solar:users-group-rounded-bold-duotone" aria-hidden="true"></iconify-icon>Voyageurs</label>
+            <select id="hs-guests" aria-label="Nombre de voyageurs">
+              <option>1 adulte, 1 chambre</option>
+              <option>2 adultes, 1 chambre</option>
+              <option>2 adultes, 2 chambres</option>
+              <option>Famille (4 pers.), 2 chambres</option>
+            </select>
+          </div>
+          <button class="hsb-btn" onclick="searchHotels()" aria-label="Lancer la recherche">
+            <iconify-icon icon="solar:magnifer-bold" aria-hidden="true"></iconify-icon>Rechercher
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALERTES INTELLIGENTES -->
+  <div class="container" style="padding-top:24px">
+    <div class="alerts-box" role="alert" aria-live="polite" aria-label="Alertes et notifications importantes">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <h3 style="font-size:14px;font-weight:700;color:var(--orange-dark);display:flex;align-items:center;gap:7px">
+          <iconify-icon icon="solar:bell-bing-bold-duotone" aria-hidden="true"></iconify-icon>
+          Alertes intelligentes
+        </h3>
+        <button onclick="dismissAllAlerts()" style="font-size:12px;font-weight:600;color:var(--orange);background:none;border:none;cursor:pointer">Tout ignorer</button>
+      </div>
+      <div id="alerts-container">
+        <div class="alert-item">
+          <iconify-icon icon="solar:fire-bold-duotone" style="color:var(--red)" aria-hidden="true"></iconify-icon>
+          <div class="alert-item-content">
+            <div class="alert-item-title">🔥 Hilton Yaoundé — Seulement 2 chambres restantes !</div>
+            <div class="alert-item-desc">Prix actuel : 45 000 FCFA/nuit · Réservez maintenant avant que le prix monte.</div>
+          </div>
+          <button class="alert-dismiss" onclick="dismissAlert(this)" aria-label="Ignorer cette alerte">×</button>
+        </div>
+        <div class="alert-item">
+          <iconify-icon icon="solar:graph-down-bold-duotone" style="color:var(--green)" aria-hidden="true"></iconify-icon>
+          <div class="alert-item-content">
+            <div class="alert-item-title">📉 Prix baissé ! Kribi Beach Resort -20% ce week-end</div>
+            <div class="alert-item-desc">De 35 000 → 28 000 FCFA/nuit · Offre valable jusqu'au dimanche.</div>
+          </div>
+          <button class="alert-dismiss" onclick="dismissAlert(this)" aria-label="Ignorer cette alerte">×</button>
+        </div>
+        <div class="alert-item">
+          <iconify-icon icon="solar:ticket-sale-bold-duotone" style="color:var(--orange)" aria-hidden="true"></iconify-icon>
+          <div class="alert-item-content">
+            <div class="alert-item-title">🎁 Promotion exclusive membres — -15% sur tous les hôtels 5★</div>
+            <div class="alert-item-desc">Créez un compte gratuit pour débloquer cette offre et bien d'autres.</div>
+          </div>
+          <button class="alert-dismiss" onclick="dismissAlert(this)" aria-label="Ignorer cette alerte">×</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROMO + JEU -->
+  <div class="container" style="padding-bottom:0">
+    <div class="promo-banner" role="region" aria-label="Promotion spéciale">
+      <div>
+        <div style="display:inline-block;background:rgba(255,255,255,.2);color:white;font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;margin-bottom:8px">🎉 OFFRE EXCLUSIVE</div>
+        <div class="promo-title">Vol + Hôtel · Économisez jusqu'à 30%</div>
+        <div class="promo-sub">Réservez votre vol et votre hôtel ensemble pour bénéficier de notre tarif combiné.</div>
+      </div>
+      <button class="promo-btn" onclick="window.location.href='flights.html'" aria-label="Voir les offres vol plus hôtel">
+        <iconify-icon icon="solar:airplane-bold-duotone" aria-hidden="true"></iconify-icon>
+        Voir les offres
+      </button>
+    </div>
+  </div>
+
+  <!-- RÉSULTATS -->
+  <div class="container hotels-layout" id="main-content">
+
+    <!-- SIDEBAR -->
+    <aside class="ht-sidebar" role="complementary" aria-label="Filtres de recherche">
+      <div class="ht-sidebar-title">
+        <iconify-icon icon="solar:filter-bold-duotone" style="color:var(--orange)" aria-hidden="true"></iconify-icon>Filtres
+      </div>
+
+      <div class="filter-block">
+        <h3><iconify-icon icon="solar:star-bold-duotone" style="color:var(--orange)" aria-hidden="true"></iconify-icon>Catégorie</h3>
+        <div class="stars-filter" role="group" aria-label="Filtrer par étoiles">
+          <label class="star-opt"><input type="checkbox" checked onchange="filterH()" aria-label="Toutes catégories">Tout afficher</label>
+          <label class="star-opt"><input type="checkbox" checked onchange="filterH()" aria-label="5 étoiles">★★★★★ 5 étoiles</label>
+          <label class="star-opt"><input type="checkbox" checked onchange="filterH()" aria-label="4 étoiles">★★★★☆ 4 étoiles</label>
+          <label class="star-opt"><input type="checkbox" checked onchange="filterH()" aria-label="3 étoiles">★★★☆☆ 3 étoiles</label>
+        </div>
+      </div>
+
+      <div class="filter-block">
+        <h3><iconify-icon icon="solar:money-bag-bold-duotone" style="color:var(--orange)" aria-hidden="true"></iconify-icon>Budget / nuit</h3>
+        <div class="price-range-wrap">
+          <input type="range" min="10000" max="400000" value="400000" id="ht-price" class="price-range" oninput="updateHPrice(this.value)" aria-label="Budget maximum par nuit" aria-valuemin="10000" aria-valuemax="400000">
+          <div class="price-range-labels">
+            <span>10 000 FCFA</span>
+            <span id="ht-price-lbl">400 000 FCFA</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-block">
+        <h3><iconify-icon icon="solar:map-point-bold-duotone" style="color:var(--orange)" aria-hidden="true"></iconify-icon>Localisation</h3>
+        <div class="filter-checks" role="group" aria-label="Filtrer par pays">
+          <label class="check-opt"><input type="checkbox" checked onchange="filterH()">🇨🇲 Cameroun</label>
+          <label class="check-opt"><input type="checkbox" checked onchange="filterH()">🌍 Afrique</label>
+          <label class="check-opt"><input type="checkbox" checked onchange="filterH()">🌐 Monde</label>
+        </div>
+      </div>
+
+      <div class="filter-block">
+        <h3><iconify-icon icon="solar:wifi-bold-duotone" style="color:var(--orange)" aria-hidden="true"></iconify-icon>Équipements</h3>
+        <div class="filter-checks" role="group" aria-label="Filtrer par équipements">
+          <label class="check-opt"><input type="checkbox" onchange="filterH()">WiFi gratuit</label>
+          <label class="check-opt"><input type="checkbox" onchange="filterH()">Piscine</label>
+          <label class="check-opt"><input type="checkbox" onchange="filterH()">Petit-déjeuner inclus</label>
+          <label class="check-opt"><input type="checkbox" onchange="filterH()">Parking gratuit</label>
+          <label class="check-opt"><input type="checkbox" onchange="filterH()">Spa & Bien-être</label>
+          <label class="check-opt"><input type="checkbox" onchange="filterH()">Restaurant</label>
+          <label class="check-opt"><input type="checkbox" onchange="filterH()">Navette aéroport</label>
+        </div>
+      </div>
+
+      <div class="filter-block">
+        <h3><iconify-icon icon="solar:buildings-2-bold-duotone" style="color:var(--orange)" aria-hidden="true"></iconify-icon>Type d'hôtel</h3>
+        <div class="filter-checks">
+          <label class="check-opt"><input type="checkbox" checked onchange="filterH()">Hôtel</label>
+          <label class="check-opt"><input type="checkbox" checked onchange="filterH()">Resort</label>
+          <label class="check-opt"><input type="checkbox" checked onchange="filterH()">Boutique hôtel</label>
+          <label class="check-opt"><input type="checkbox" checked onchange="filterH()">Villa</label>
+        </div>
+      </div>
+
+      <button class="reset-filters-btn" onclick="resetHFilters()" aria-label="Réinitialiser tous les filtres">
+        <iconify-icon icon="solar:restart-bold" aria-hidden="true"></iconify-icon>Réinitialiser
+      </button>
+
+      <!-- JEU DE CHANCE -->
+      <div class="game-card" onclick="playGame()" role="button" tabindex="0" aria-label="Jouer pour gagner une remise" onkeydown="if(event.key==='Enter')playGame()">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div class="game-title">🎰 Tentez votre chance !</div>
+            <div class="game-desc">Gagnez jusqu'à 20% de remise sur votre prochaine réservation.</div>
+          </div>
+          <div style="font-size:40px">🎁</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- LISTE -->
+    <main role="main" aria-label="Liste des hôtels">
+      <div class="ht-toolbar">
+        <span class="ht-count" id="ht-count" aria-live="polite" aria-atomic="true">20 hôtels trouvés</span>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:13px;color:var(--gray-500)">Trier :</span>
+          <select class="ht-sort" onchange="sortH(this.value)" aria-label="Trier les hôtels">
+            <option value="rec">Recommandé</option>
+            <option value="pa">Prix croissant</option>
+            <option value="pd">Prix décroissant</option>
+            <option value="rating">Meilleures notes</option>
+            <option value="stars">Étoiles</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="ht-results" role="list" aria-label="Résultats des hôtels"></div>
+
+      <div id="ht-empty" class="empty-state" style="display:none" role="status">
+        <iconify-icon icon="solar:buildings-bold-duotone" style="font-size:64px;color:var(--gray-200)" aria-hidden="true"></iconify-icon>
+        <h3>Aucun hôtel trouvé</h3>
+        <p>Modifiez vos critères pour voir plus de résultats.</p>
+        <button onclick="resetHFilters()" class="btn-signup">Réinitialiser les filtres</button>
+      </div>
+    </main>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     VUE 2 : DÉTAIL HÔTEL
+══════════════════════════════════ -->
+<div id="view-detail" style="display:none" role="main">
+  <div class="hotel-detail" id="hotel-detail-content"></div>
+</div>
+
+
+<!-- ══ FOOTER ══ -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-top">
+    <div class="container">
+      <div class="footer-top-grid">
+        <div class="newsletter-box">
+          <div class="newsletter-left">
+            <iconify-icon icon="solar:letter-bold-duotone" style="font-size:36px;color:var(--orange)" aria-hidden="true"></iconify-icon>
+            <div><h3>Alertes prix hôtels</h3><p>Notifié dès qu'un hôtel baisse de prix dans votre destination.</p></div>
+          </div>
+          <form class="newsletter-form" onsubmit="subNews(event)" aria-label="Inscription newsletter">
+            <div class="newsletter-input-wrap">
+              <iconify-icon icon="solar:letter-bold-duotone" style="color:#64748b" aria-hidden="true"></iconify-icon>
+              <input type="email" placeholder="votre@email.com" required aria-label="Votre adresse email">
+            </div>
+            <button type="submit"><iconify-icon icon="solar:arrow-right-bold" aria-hidden="true"></iconify-icon>S'abonner</button>
+          </form>
+        </div>
+        <div class="app-box">
+          <iconify-icon icon="solar:smartphone-bold-duotone" style="font-size:36px;color:var(--blue)" aria-hidden="true"></iconify-icon>
+          <h3>Fly360 dans votre poche</h3>
+          <p>Réservations hors ligne, alertes hôtel temps réel.</p>
+          <div class="app-btns">
+            <a href="https://apps.apple.com" target="_blank" rel="noopener" class="app-btn" aria-label="Télécharger sur App Store"><iconify-icon icon="mdi:apple" style="font-size:20px" aria-hidden="true"></iconify-icon><div><span>Télécharger sur</span><strong>App Store</strong></div></a>
+            <a href="https://play.google.com" target="_blank" rel="noopener" class="app-btn" aria-label="Télécharger sur Google Play"><iconify-icon icon="mdi:google-play" style="font-size:20px;color:#22C55E" aria-hidden="true"></iconify-icon><div><span>Disponible sur</span><strong>Google Play</strong></div></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="images/logo/logo.png" alt="Logo Fly360" class="footer-logo">
+          <p>Fly360 — Plateforme de voyage N°1 au Cameroun. Vols, hôtels, voitures au meilleur prix.</p>
+          <div class="footer-social">
+            <a href="https://facebook.com/fly360" target="_blank" rel="noopener" class="social-link" aria-label="Facebook"><iconify-icon icon="solar:facebook-bold-duotone" aria-hidden="true"></iconify-icon></a>
+            <a href="https://twitter.com/fly360" target="_blank" rel="noopener" class="social-link" aria-label="Twitter"><iconify-icon icon="fa6-brands:x-twitter" aria-hidden="true"></iconify-icon></a>
+            <a href="https://instagram.com/fly360" target="_blank" rel="noopener" class="social-link" aria-label="Instagram"><iconify-icon icon="solar:instagram-bold-duotone" aria-hidden="true"></iconify-icon></a>
+            <a href="https://youtube.com/fly360" target="_blank" rel="noopener" class="social-link" aria-label="YouTube"><iconify-icon icon="solar:youtube-bold-duotone" aria-hidden="true"></iconify-icon></a>
+            <a href="https://wa.me/237600000000" target="_blank" rel="noopener" class="social-link" aria-label="WhatsApp"><iconify-icon icon="solar:phone-bold-duotone" aria-hidden="true"></iconify-icon></a>
+          </div>
+          <div class="footer-certifs">
+            <div class="certif"><iconify-icon icon="solar:shield-keyhole-bold-duotone" style="color:var(--green)" aria-hidden="true"></iconify-icon>SSL</div>
+            <div class="certif"><iconify-icon icon="solar:card-bold-duotone" style="color:var(--blue)" aria-hidden="true"></iconify-icon>Stripe</div>
+            <div class="certif"><iconify-icon icon="solar:star-bold-duotone" style="color:var(--yellow)" aria-hidden="true"></iconify-icon>4.9/5</div>
+          </div>
+        </div>
+        <div>
+          <h5><iconify-icon icon="solar:compass-bold-duotone" style="color:var(--orange)" aria-hidden="true"></iconify-icon>Services</h5>
+          <ul class="footer-links">
+            <li><a href="flights.html"><iconify-icon icon="solar:airplane-bold-duotone" aria-hidden="true"></iconify-icon>Vols pas chers</a></li>
+            <li><a href="hotels.html"><iconify-icon icon="solar:buildings-bold-duotone" aria-hidden="true"></iconify-icon>Réservation hôtels</a></li>
+            <li><a href="cars.html"><iconify-icon icon="solar:car-bold-duotone" aria-hidden="true"></iconify-icon>Location voitures</a></li>
+            <li><a href="planner.html"><iconify-icon icon="solar:calendar-bold-duotone" aria-hidden="true"></iconify-icon>Planificateur</a></li>
+            <li><a href="planner.html"><iconify-icon icon="solar:map-point-bold-duotone" aria-hidden="true"></iconify-icon>Suivi voyageur</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5><iconify-icon icon="solar:map-bold-duotone" style="color:var(--orange)" aria-hidden="true"></iconify-icon>Destinations</h5>
+          <ul class="footer-links">
+            <li><a href="hotels.html?dest=Yaoundé"><iconify-icon icon="twemoji:flag-cameroon" aria-hidden="true"></iconify-icon>Hôtels Yaoundé</a></li>
+            <li><a href="hotels.html?dest=Douala"><iconify-icon icon="twemoji:flag-cameroon" aria-hidden="true"></iconify-icon>Hôtels Douala</a></li>
+            <li><a href="hotels.html?dest=Kribi"><iconify-icon icon="solar:sun-bold-duotone" style="color:var(--yellow)" aria-hidden="true"></iconify-icon>Hôtels Kribi</a></li>
+            <li><a href="hotels.html?dest=Dubai"><iconify-icon icon="twemoji:flag-united-arab-emirates" aria-hidden="true"></iconify-icon>Hôtels Dubai</a></li>
+            <li><a href="hotels.html?dest=Paris"><iconify-icon icon="twemoji:flag-france" aria-hidden="true"></iconify-icon>Hôtels Paris</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5><iconify-icon icon="solar:user-circle-bold-duotone" style="color:var(--orange)" aria-hidden="true"></iconify-icon>Mon espace</h5>
+          <ul class="footer-links">
+            <li><a href="login.html"><iconify-icon icon="solar:login-bold-duotone" aria-hidden="true"></iconify-icon>Se connecter</a></li>
+            <li><a href="register.html"><iconify-icon icon="solar:user-plus-bold-duotone" aria-hidden="true"></iconify-icon>Créer un compte</a></li>
+            <li><a href="dashboard.html"><iconify-icon icon="solar:widget-bold-duotone" aria-hidden="true"></iconify-icon>Mon dashboard</a></li>
+            <li><a href="dashboard.html"><iconify-icon icon="solar:ticket-bold-duotone" aria-hidden="true"></iconify-icon>Mes réservations</a></li>
+          </ul>
+          <h5 style="margin-top:20px"><iconify-icon icon="solar:headphones-round-sound-bold-duotone" style="color:var(--orange)" aria-hidden="true"></iconify-icon>Contact</h5>
+          <ul class="footer-contact-list">
+            <li><iconify-icon icon="solar:letter-bold-duotone" style="color:var(--orange)" aria-hidden="true"></iconify-icon><a href="mailto:contact@fly360.cm">contact@fly360.cm</a></li>
+            <li><iconify-icon icon="solar:phone-bold-duotone" style="color:var(--orange)" aria-hidden="true"></iconify-icon><a href="tel:+237600000000">+237 600 000 000</a></li>
+            <li><iconify-icon icon="solar:map-point-bold-duotone" style="color:var(--orange)" aria-hidden="true"></iconify-icon><span>Douala, Cameroun</span></li>
+            <li style="color:var(--green)"><iconify-icon icon="solar:clock-circle-bold-duotone" style="color:var(--green)" aria-hidden="true"></iconify-icon><span>Support 24h/24 — 7j/7</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container footer-bottom-inner">
+      <span>© 2025 Fly360 Cameroun. Tous droits réservés.</span>
+      <div class="footer-bottom-links">
+        <a href="#">Confidentialité</a><a href="#">CGU</a><a href="#">Cookies</a>
+        <span class="footer-secure"><iconify-icon icon="solar:shield-keyhole-bold-duotone" style="color:var(--orange)" aria-hidden="true"></iconify-icon>Paiement sécurisé · Stripe · QR Code</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ══ MODAL RÉSERVATION ══ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal()" role="dialog" aria-modal="true" aria-label="Fenêtre de réservation"></div>
+<div class="booking-modal" id="booking-modal" role="dialog" aria-modal="true" aria-labelledby="bm-title">
+  <div class="bm-header">
+    <h2 id="bm-title">Réserver votre chambre</h2>
+    <button class="bm-close" onclick="closeModal()" aria-label="Fermer la fenêtre de réservation">
+      <iconify-icon icon="solar:close-circle-bold-duotone" aria-hidden="true"></iconify-icon>
+    </button>
+  </div>
+  <div class="bm-body">
+    <!-- ÉTAPES -->
+    <div class="bm-steps" role="progressbar" aria-label="Étapes de réservation" aria-valuenow="1" aria-valuemin="1" aria-valuemax="3">
+      <div class="bm-step active" id="step1-ind">
+        <div class="bm-step-num">1</div>
+        <span>Infos</span>
+      </div>
+      <div class="bm-step-line" id="line1"></div>
+      <div class="bm-step pending" id="step2-ind">
+        <div class="bm-step-num">2</div>
+        <span>Paiement</span>
+      </div>
+      <div class="bm-step-line" id="line2"></div>
+      <div class="bm-step pending" id="step3-ind">
+        <div class="bm-step-num">3</div>
+        <span>QR Code</span>
+      </div>
+    </div>
+
+    <!-- ÉTAPE 1 : INFOS -->
+    <div id="bm-step1">
+      <div id="bm-hotel-preview" style="margin-bottom:20px"></div>
+      <div class="form-row">
+        <div class="form-field">
+          <label for="bm-fname"><iconify-icon icon="solar:user-bold-duotone" aria-hidden="true"></iconify-icon>Prénom *</label>
+          <input type="text" id="bm-fname" placeholder="Jean" required aria-required="true">
+        </div>
+        <div class="form-field">
+          <label for="bm-lname"><iconify-icon icon="solar:user-bold-duotone" aria-hidden="true"></iconify-icon>Nom *</label>
+          <input type="text" id="bm-lname" placeholder="Dupont" required aria-required="true">
+        </div>
+      </div>
+      <div class="form-field" style="margin-top:14px">
+        <label for="bm-email"><iconify-icon icon="solar:letter-bold-duotone" aria-hidden="true"></iconify-icon>Email *</label>
+        <input type="email" id="bm-email" placeholder="jean@email.com" required aria-required="true">
+      </div>
+      <div class="form-field" style="margin-top:14px">
+        <label for="bm-phone"><iconify-icon icon="solar:phone-bold-duotone" aria-hidden="true"></iconify-icon>Téléphone *</label>
+        <input type="tel" id="bm-phone" placeholder="+237 6XX XXX XXX" required aria-required="true">
+      </div>
+      <div class="form-row" style="margin-top:14px">
+        <div class="form-field">
+          <label for="bm-in"><iconify-icon icon="solar:calendar-bold-duotone" aria-hidden="true"></iconify-icon>Check-in *</label>
+          <input type="date" id="bm-in" required>
+        </div>
+        <div class="form-field">
+          <label for="bm-out"><iconify-icon icon="solar:calendar-mark-bold-duotone" aria-hidden="true"></iconify-icon>Check-out *</label>
+          <input type="date" id="bm-out" required onchange="calcHTotal()">
+        </div>
+      </div>
+      <div class="form-field" style="margin-top:14px">
+        <label for="bm-room"><iconify-icon icon="solar:buildings-bold-duotone" aria-hidden="true"></iconify-icon>Type de chambre</label>
+        <select id="bm-room" onchange="calcHTotal()" aria-label="Sélectionner le type de chambre">
+          <option value="classic">Chambre Classique — Lit Queen · Vue jardin</option>
+          <option value="deluxe">Chambre Deluxe — Lit King · Vue mer · Spa</option>
+          <option value="suite">Suite Présidentielle — Salon privé · Vue panoramique</option>
+        </select>
+      </div>
+      <div class="bm-total" aria-live="polite">
+        <span>Total estimé</span>
+        <strong id="bm-total-price">—</strong>
+      </div>
+      <button class="bm-submit" onclick="goStep(2)" aria-label="Continuer vers le paiement">
+        <iconify-icon icon="solar:arrow-right-bold" aria-hidden="true"></iconify-icon>Continuer vers le paiement
+      </button>
+    </div>
+
+    <!-- ÉTAPE 2 : PAIEMENT -->
+    <div id="bm-step2" style="display:none">
+      <div style="background:var(--gray-50);border-radius:10px;padding:14px;margin-bottom:18px" id="bm-recap">
+        <div style="font-size:13px;font-weight:700;color:var(--gray-800);margin-bottom:8px">Récapitulatif</div>
+      </div>
+      <div class="form-field">
+        <label for="bm-card"><iconify-icon icon="solar:card-bold-duotone" aria-hidden="true"></iconify-icon>Numéro de carte</label>
+        <input type="text" id="bm-card" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)" aria-label="Numéro de carte bancaire">
+      </div>
+      <div class="form-row" style="margin-top:14px">
+        <div class="form-field">
+          <label for="bm-exp"><iconify-icon icon="solar:calendar-bold-duotone" aria-hidden="true"></iconify-icon>MM/AA</label>
+          <input type="text" id="bm-exp" placeholder="12/27" maxlength="5" aria-label="Date d'expiration">
+        </div>
+        <div class="form-field">
+          <label for="bm-cvc"><iconify-icon icon="solar:shield-keyhole-bold-duotone" aria-hidden="true"></iconify-icon>CVC</label>
+          <input type="password" id="bm-cvc" placeholder="***" maxlength="3" aria-label="Code de sécurité CVC">
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:16px;padding:12px;background:var(--green-light);border-radius:8px;border:1px solid #bbf7d0">
+        <iconify-icon icon="solar:shield-check-bold-duotone" style="font-size:22px;color:var(--green-dark)" aria-hidden="true"></iconify-icon>
+        <div style="font-size:12px;color:var(--green-dark)"><strong>Paiement 100% sécurisé</strong> · Cryptage SSL 256-bit · Certifié Stripe · Données non stockées</div>
+      </div>
+      <div class="bm-total" style="margin-top:16px" aria-live="polite">
+        <span>Total à payer</span>
+        <strong id="bm-total2">—</strong>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:12px">
+        <button onclick="goStep(1)" style="flex:0 0 auto;padding:12px 18px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:13px;font-weight:600;color:var(--gray-600);cursor:pointer;background:none" aria-label="Retour aux informations">
+          <iconify-icon icon="solar:alt-arrow-left-bold" aria-hidden="true"></iconify-icon>Retour
+        </button>
+        <button class="bm-submit" style="flex:1" onclick="processPayment()" aria-label="Payer et confirmer la réservation">
+          <iconify-icon icon="solar:card-bold-duotone" aria-hidden="true"></iconify-icon>Payer et confirmer
+        </button>
+      </div>
+      <div class="bm-secure" aria-label="Sécurité du paiement">
+        <iconify-icon icon="solar:shield-keyhole-bold-duotone" style="color:var(--green)" aria-hidden="true"></iconify-icon>
+        Paiement sécurisé · Stripe · Aucune donnée stockée
+      </div>
+    </div>
+
+    <!-- ÉTAPE 3 : QR CODE -->
+    <div id="bm-step3" style="display:none;text-align:center">
+      <div style="font-size:48px;margin-bottom:12px">✅</div>
+      <div style="font-size:20px;font-weight:800;color:var(--gray-900);margin-bottom:8px" id="bm-confirm-title">Réservation confirmée !</div>
+      <div style="font-size:13px;color:var(--gray-500);margin-bottom:20px" id="bm-ref-num"></div>
+      <div style="background:var(--orange-light);border:1px solid var(--orange-border);border-radius:10px;padding:16px;margin-bottom:20px;text-align:left">
+        <div style="font-size:13px;font-weight:700;color:var(--orange-dark);margin-bottom:8px;display:flex;align-items:center;gap:6px">
+          <iconify-icon icon="solar:qr-code-bold-duotone" aria-hidden="true"></iconify-icon>
+          Double vérification QR Code requise
+        </div>
+        <div style="font-size:12px;color:var(--gray-600);line-height:1.7">
+          Pour valider définitivement votre réservation, scannez les 2 QR codes :<br>
+          <strong>QR 1</strong> — Envoyé par email à votre adresse<br>
+          <strong>QR 2</strong> — Envoyé par SMS à votre téléphone
+        </div>
+      </div>
+      <button class="bm-submit" onclick="openQRModal()" aria-label="Scanner le QR Code de vérification">
+        <iconify-icon icon="solar:qr-code-bold-duotone" aria-hidden="true"></iconify-icon>
+        Scanner mon QR Code
+      </button>
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+        <a id="hotel-official-link" href="#" target="_blank" rel="noopener" style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:11px;border:1.5px solid var(--orange);color:var(--orange);border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;transition:all .2s" aria-label="Visiter le site officiel de l'hôtel">
+          <iconify-icon icon="solar:link-bold-duotone" aria-hidden="true"></iconify-icon>Site officiel hôtel
+        </a>
+        <button onclick="window.location.href='planner.html'" style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:11px;background:var(--gray-900);color:white;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none" aria-label="Voir mon planificateur de voyage">
+          <iconify-icon icon="solar:calendar-bold-duotone" aria-hidden="true"></iconify-icon>Mon planificateur
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ QR CODE MODAL ══ -->
+<div class="qr-modal" id="qr-modal" role="dialog" aria-modal="true" aria-labelledby="qr-modal-title">
+  <button class="qr-close" onclick="closeQR()" aria-label="Fermer le QR Code">
+    <iconify-icon icon="solar:close-circle-bold-duotone" aria-hidden="true"></iconify-icon>
+  </button>
+  <div style="font-size:40px;margin-bottom:10px">🔐</div>
+  <div class="qr-title" id="qr-modal-title">Vérification QR Code</div>
+  <div class="qr-sub" id="qr-sub-text">Scannez ce QR code avec votre application Fly360 pour valider votre réservation.</div>
+
+  <div class="qr-code-box" aria-label="QR Code de vérification">
+    <svg class="qr-code-svg" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="QR Code">
+      <!-- QR Code simplifié visuel -->
+      <rect width="180" height="180" fill="white"/>
+      <!-- Coin haut-gauche -->
+      <rect x="10" y="10" width="50" height="50" fill="none" stroke="#F97316" stroke-width="4"/>
+      <rect x="20" y="20" width="30" height="30" fill="#F97316"/>
+      <!-- Coin haut-droit -->
+      <rect x="120" y="10" width="50" height="50" fill="none" stroke="#F97316" stroke-width="4"/>
+      <rect x="130" y="20" width="30" height="30" fill="#F97316"/>
+      <!-- Coin bas-gauche -->
+      <rect x="10" y="120" width="50" height="50" fill="none" stroke="#F97316" stroke-width="4"/>
+      <rect x="20" y="130" width="30" height="30" fill="#F97316"/>
+      <!-- Données -->
+      <rect x="75" y="10" width="10" height="10" fill="#0F172A"/>
+      <rect x="90" y="10" width="10" height="10" fill="#0F172A"/>
+      <rect x="75" y="25" width="10" height="10" fill="#0F172A"/>
+      <rect x="75" y="40" width="10" height="10" fill="#0F172A"/>
+      <rect x="90" y="40" width="10" height="10" fill="#0F172A"/>
+      <rect x="10" y="75" width="10" height="10" fill="#0F172A"/>
+      <rect x="25" y="75" width="10" height="10" fill="#0F172A"/>
+      <rect x="40" y="75" width="10" height="10" fill="#0F172A"/>
+      <rect x="75" y="75" width="10" height="10" fill="#F97316"/>
+      <rect x="90" y="75" width="10" height="10" fill="#0F172A"/>
+      <rect x="105" y="75" width="10" height="10" fill="#0F172A"/>
+      <rect x="120" y="75" width="10" height="10" fill="#0F172A"/>
+      <rect x="135" y="75" width="10" height="10" fill="#0F172A"/>
+      <rect x="150" y="75" width="10" height="10" fill="#F97316"/>
+      <rect x="165" y="75" width="10" height="10" fill="#0F172A"/>
+      <rect x="75" y="90" width="10" height="10" fill="#0F172A"/>
+      <rect x="90" y="90" width="10" height="10" fill="#F97316"/>
+      <rect x="105" y="90" width="10" height="10" fill="#0F172A"/>
+      <rect x="120" y="90" width="10" height="10" fill="#F97316"/>
+      <rect x="135" y="90" width="10" height="10" fill="#0F172A"/>
+      <rect x="150" y="90" width="10" height="10" fill="#0F172A"/>
+      <rect x="75" y="105" width="10" height="10" fill="#0F172A"/>
+      <rect x="90" y="105" width="10" height="10" fill="#0F172A"/>
+      <rect x="105" y="105" width="10" height="10" fill="#F97316"/>
+      <rect x="120" y="105" width="10" height="10" fill="#0F172A"/>
+      <rect x="75" y="120" width="10" height="10" fill="#F97316"/>
+      <rect x="90" y="135" width="10" height="10" fill="#0F172A"/>
+      <rect x="105" y="120" width="10" height="10" fill="#0F172A"/>
+      <rect x="120" y="135" width="10" height="10" fill="#F97316"/>
+      <rect x="135" y="120" width="10" height="10" fill="#0F172A"/>
+      <rect x="150" y="120" width="10" height="10" fill="#0F172A"/>
+      <rect x="165" y="135" width="10" height="10" fill="#F97316"/>
+      <text x="90" y="175" text-anchor="middle" font-size="8" fill="#94A3B8">FLY360 · VÉRIFICATION</text>
+    </svg>
+  </div>
+
+  <div class="qr-steps" role="list" aria-label="Étapes de vérification">
+    <div class="qr-step" role="listitem">
+      <div class="qr-step-num">1</div>
+      <span>QR Code Email — Scan depuis votre boîte mail</span>
+    </div>
+    <div class="qr-step" role="listitem">
+      <div class="qr-step-num">2</div>
+      <span>QR Code SMS — Scan depuis votre téléphone</span>
+    </div>
+    <div class="qr-step" role="listitem">
+      <div class="qr-step-num" style="background:var(--green)">✓</div>
+      <span>Réservation définitivement validée</span>
+    </div>
+  </div>
+
+  <button class="qr-verify-btn" onclick="verifyQR()" aria-label="Confirmer le scan du QR Code">
+    <iconify-icon icon="solar:qr-code-bold-duotone" aria-hidden="true"></iconify-icon>
+    J'ai scanné les 2 QR Codes — Confirmer
+  </button>
+</div>
+
+
+<script src="data/hotels.js"></script>
+<script src="js/app.js"></script>
+<script>
+// ═══════════════════════════════════════════════
+// DONNÉES LOCALES
+// ═══════════════════════════════════════════════
+let filteredHotels = []
+let selectedHotel = null
+let selectedRoom = null
+let currentStep = 1
+let qrVerified = [false, false]
+
+const ROOM_PRICES = { classic: 0, deluxe: 1.5, suite: 2.5 }
+
+// ═══════════════════════════════════════════════
+// ACCESSIBILITÉ
+// ═══════════════════════════════════════════════
+const a11yState = { font: false, contrast: false, dyslexia: false }
+
+function toggleA11y(type) {
+  a11yState[type] = !a11yState[type]
+  const btn = document.getElementById(`btn-${type}`)
+
+  if (type === 'font') {
+    document.body.style.fontSize = a11yState.font ? '18px' : ''
+    btn.classList.toggle('active', a11yState.font)
+    announce(a11yState.font ? 'Texte agrandi activé' : 'Taille normale restaurée')
+  }
+  if (type === 'contrast') {
+    document.body.style.filter = a11yState.contrast ? 'contrast(1.6) brightness(0.9)' : ''
+    btn.classList.toggle('active', a11yState.contrast)
+    announce(a11yState.contrast ? 'Contraste élevé activé' : 'Contraste normal restauré')
+  }
+  if (type === 'dyslexia') {
+    document.body.style.fontFamily = a11yState.dyslexia ? '"OpenDyslexic", "Comic Sans MS", cursive' : ''
+    document.body.style.letterSpacing = a11yState.dyslexia ? '0.12em' : ''
+    document.body.style.lineHeight = a11yState.dyslexia ? '1.9' : ''
+    btn.classList.toggle('active', a11yState.dyslexia)
+    announce(a11yState.dyslexia ? 'Mode dyslexie activé' : 'Police normale restaurée')
+  }
+}
+
+function resetA11y() {
+  Object.keys(a11yState).forEach(k => { a11yState[k] = false })
+  document.body.style.cssText = ''
+  document.querySelectorAll('.a11y-btn').forEach(b => b.classList.remove('active'))
+  announce('Paramètres d\'accessibilité réinitialisés')
+}
+
+function speakPage() {
+  if (!('speechSynthesis' in window)) { alert('La synthèse vocale n\'est pas disponible sur ce navigateur.'); return }
+  window.speechSynthesis.cancel()
+  const text = `Bienvenue sur la page Hôtels de Fly360. Nous avons ${filteredHotels.length} hôtels disponibles. Utilisez les filtres pour affiner votre recherche. Cliquez sur un hôtel pour voir ses détails et réserver.`
+  const utt = new SpeechSynthesisUtterance(text)
+  utt.lang = 'fr-FR'
+  utt.rate = 0.9
+  window.speechSynthesis.speak(utt)
+}
+
+function announce(msg) {
+  let live = document.getElementById('a11y-live')
+  if (!live) {
+    live = document.createElement('div')
+    live.id = 'a11y-live'
+    live.setAttribute('aria-live', 'assertive')
+    live.setAttribute('aria-atomic', 'true')
+    live.className = 'sr-only'
+    document.body.appendChild(live)
+  }
+  live.textContent = msg
+  setTimeout(() => { live.textContent = '' }, 2000)
+}
+
+// ═══════════════════════════════════════════════
+// ALERTES
+// ═══════════════════════════════════════════════
+function dismissAlert(btn) {
+  btn.closest('.alert-item').remove()
+  const alerts = document.querySelectorAll('.alert-item')
+  if (!alerts.length) document.querySelector('.alerts-box').style.display = 'none'
+}
+
+function dismissAllAlerts() {
+  document.querySelector('.alerts-box').style.display = 'none'
+}
+
+// ═══════════════════════════════════════════════
+// RECHERCHE
+// ═══════════════════════════════════════════════
+function searchHotels() {
+  const btn = document.querySelector('.hsb-btn')
+  btn.innerHTML = '<iconify-icon icon="solar:refresh-bold" style="animation:spin 1s linear infinite"></iconify-icon> Recherche...'
+  btn.disabled = true
+  setTimeout(() => {
+    btn.innerHTML = '<iconify-icon icon="solar:magnifer-bold"></iconify-icon> Rechercher'
+    btn.disabled = false
+    filterH()
+    announce(`${filteredHotels.length} hôtels trouvés`)
+  }, 1000)
+}
+
+// ═══════════════════════════════════════════════
+// FILTRES
+// ═══════════════════════════════════════════════
+function filterH() {
+  const priceMax = parseInt(document.getElementById('ht-price').value)
+  const dest = document.getElementById('hs-dest').value.toLowerCase()
+
+  filteredHotels = hotels.filter(h => {
+    if (h.price > priceMax) return false
+    if (dest && !h.name.toLowerCase().includes(dest) && !h.city.toLowerCase().includes(dest) && !h.country.toLowerCase().includes(dest)) return false
+    return true
+  })
+
+  renderHotels(filteredHotels)
+}
+
+function updateHPrice(val) {
+  document.getElementById('ht-price-lbl').textContent = parseInt(val).toLocaleString('fr-FR') + ' FCFA'
+  filterH()
+}
+
+function resetHFilters() {
+  document.getElementById('ht-price').value = 400000
+  document.getElementById('ht-price-lbl').textContent = '400 000 FCFA'
+  document.getElementById('hs-dest').value = ''
+  document.querySelectorAll('.filter-checks input').forEach(i => i.checked = true)
+  filteredHotels = [...hotels]
+  renderHotels(filteredHotels)
+  announce('Filtres réinitialisés')
+}
+
+// ═══════════════════════════════════════════════
+// TRI
+// ═══════════════════════════════════════════════
+function sortH(val) {
+  const s = [...filteredHotels]
+  if (val === 'pa') s.sort((a,b) => a.price - b.price)
+  if (val === 'pd') s.sort((a,b) => b.price - a.price)
+  if (val === 'rating') s.sort((a,b) => b.rating - a.rating)
+  if (val === 'stars') s.sort((a,b) => b.stars - a.stars)
+  renderHotels(s)
+}
+
+// ═══════════════════════════════════════════════
+// RENDU LISTE
+// ═══════════════════════════════════════════════
+function renderHotels(list) {
+  const el = document.getElementById('ht-results')
+  const empty = document.getElementById('ht-empty')
+  const count = document.getElementById('ht-count')
+  count.textContent = `${list.length} hôtel${list.length > 1 ? 's' : ''} trouvé${list.length > 1 ? 's' : ''}`
+
+  if (!list.length) { el.innerHTML = ''; empty.style.display = 'flex'; return }
+  empty.style.display = 'none'
+
+  const catColors = { 'Luxe':'#7c3aed', 'Affaires':'#0284c7', 'Plage':'#059669', 'Resort':'#dc2626', 'Nature':'#16a34a', 'Économique':'#475569', 'Villa Luxe':'#b45309' }
+
+  el.innerHTML = list.map(h => `
+    <article class="hotel-list-card" onclick="showHotelDetail('${h.id}')" role="listitem" aria-label="Hôtel ${h.name}, ${h.stars} étoiles, à partir de ${h.price.toLocaleString('fr-FR')} FCFA par nuit">
+      <div class="hlc-img" style="background-image:url('${h.image}')" role="img" aria-label="Photo de ${h.name}">
+        <div class="hlc-badge-top">
+          <span class="hlc-badge" style="background:${catColors[h.category] || '#475569'}">${h.category}</span>
+        </div>
+        <span class="hlc-avail ${h.available ? 'ok' : 'no'}" aria-label="${h.available ? 'Disponible' : 'Complet'}">${h.available ? 'Disponible' : 'Complet'}</span>
+        ${!h.available ? '' : h.price < 30000 ? '<span class="hlc-promo" aria-label="Bon plan">🔥 Bon plan</span>' : ''}
+      </div>
+      <div class="hlc-body">
+        <div class="hlc-header">
+          <div>
+            <div class="hlc-name">${h.name}</div>
+            <div class="hlc-loc">
+              <iconify-icon icon="solar:map-point-bold-duotone" aria-hidden="true"></iconify-icon>
+              ${h.city}, ${h.country}
+            </div>
+          </div>
+          <div>
+            <div class="hlc-rating">
+              <span class="hlc-score" aria-label="Note ${h.rating} sur 5">${h.rating}</span>
+              <span class="hlc-reviews" aria-label="${h.reviews} avis">${h.reviews} avis</span>
+            </div>
+            <div class="hlc-stars" aria-label="${h.stars} étoiles">${'★'.repeat(h.stars)}${'☆'.repeat(5-h.stars)}</div>
+          </div>
+        </div>
+
+        <div class="hlc-amenities" role="list" aria-label="Équipements disponibles">
+          ${h.amenities.slice(0,5).map(a => `
+            <span class="hlc-am" role="listitem">
+              <iconify-icon icon="${getAmIcon(a)}" aria-hidden="true"></iconify-icon>${a}
+            </span>
+          `).join('')}
+          ${h.amenities.length > 5 ? `<span class="hlc-am" aria-label="${h.amenities.length - 5} équipements supplémentaires">+${h.amenities.length - 5}</span>` : ''}
+        </div>
+
+        <p class="hlc-desc">${h.description}</p>
+
+        <div class="hlc-footer">
+          <div>
+            <div class="hlc-price">
+              ${h.price.toLocaleString('fr-FR')} FCFA
+              <small>par nuit · annulation gratuite</small>
+            </div>
+            <div class="hlc-guarantees" aria-label="Garanties incluses">
+              <span><iconify-icon icon="solar:check-circle-bold-duotone" aria-hidden="true"></iconify-icon>Annulation gratuite 24h</span>
+              <span><iconify-icon icon="solar:check-circle-bold-duotone" aria-hidden="true"></iconify-icon>Meilleur prix garanti</span>
+            </div>
+          </div>
+          <div class="hlc-btns">
+            <button class="hlc-save-btn" onclick="event.stopPropagation();toggleSave(this,'${h.id}')" aria-label="Sauvegarder ${h.name} dans mes favoris">
+              <iconify-icon icon="solar:heart-bold-duotone" aria-hidden="true"></iconify-icon>
+            </button>
+            <button class="hlc-view-btn" onclick="event.stopPropagation();showHotelDetail('${h.id}')" aria-label="Voir les détails de ${h.name}">
+              <iconify-icon icon="solar:eye-bold-duotone" aria-hidden="true"></iconify-icon>Voir détails
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+  `).join('')
+}
+
+function getAmIcon(am) {
+  const map = {
+    'WiFi gratuit':'solar:wifi-bold-duotone','Piscine':'solar:swimming-bold-duotone','Spa':'solar:star-rings-bold-duotone',
+    'Restaurant':'solar:fork-spoon-bold-duotone','Bar':'solar:cup-hot-bold-duotone','Parking':'solar:car-parking-bold-duotone',
+    'Salle de sport':'solar:dumbell-bold-duotone','Room service':'solar:bell-bing-bold-duotone',
+    'Navette aéroport':'solar:airplane-bold-duotone','Petit-déjeuner inclus':'solar:cup-first-bold-duotone',
+    'Conférences':'solar:presentation-graph-bold-duotone','Vue fleuve':'solar:waterdrops-bold-duotone',
+    'Vue panoramique':'solar:mountains-bold-duotone','Plage privée':'solar:sun-bold-duotone',
+    'Tennis':'solar:circle-bottom-bold-duotone','Golf 18 trous':'solar:flag-bold-duotone',
+    'WiFi':'solar:wifi-bold-duotone','Jardin':'solar:leaf-bold-duotone',
+  }
+  return map[am] || 'solar:check-circle-bold-duotone'
+}
+
+function toggleSave(btn, id) {
+  btn.classList.toggle('saved')
+  const saved = btn.classList.contains('saved')
+  announce(saved ? 'Hôtel ajouté aux favoris' : 'Hôtel retiré des favoris')
+}
+
+// ═══════════════════════════════════════════════
+// DÉTAIL HÔTEL
+// ═══════════════════════════════════════════════
+function showHotelDetail(id) {
+  selectedHotel = hotels.find(h => h.id === id)
+  if (!selectedHotel) return
+  const h = selectedHotel
+
+  document.getElementById('view-list').style.display = 'none'
+  document.getElementById('view-detail').style.display = 'block'
+  window.scrollTo(0, 0)
+
+  const rooms = [
+    { id:'classic', name:'Chambre Classique', bed:'Lit Queen', view:'Vue jardin', features:['Petit-déjeuner inclus','WiFi gratuit','Climatisation'], price: h.price },
+    { id:'deluxe', name:'Chambre Deluxe', bed:'Lit King', view:'Vue mer', features:['Petit-déjeuner inclus','Accès spa','Minibar','Balcon privé'], price: Math.round(h.price * 1.5) },
+    { id:'suite', name:'Suite Présidentielle', bed:'Lit King + Canapé', view:'Vue panoramique', features:['Service VIP','Chef privé','Salon privé','Jacuzzi','Conciergerie 24/7'], price: Math.round(h.price * 2.5) },
+  ]
+
+  const catColors = { 'Luxe':'#7c3aed', 'Affaires':'#0284c7', 'Plage':'#059669', 'Resort':'#dc2626', 'Nature':'#16a34a', 'Économique':'#475569', 'Villa Luxe':'#b45309' }
+
+  document.getElementById('hotel-detail-content').innerHTML = `
+    <!-- RETOUR -->
+    <div style="padding-top:28px;margin-bottom:16px">
+      <button onclick="backToList()" style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--orange);background:none;border:none;cursor:pointer" aria-label="Retour à la liste des hôtels">
+        <iconify-icon icon="solar:alt-arrow-left-bold" aria-hidden="true"></iconify-icon>Retour aux hôtels
+      </button>
+    </div>
+
+    <!-- GALERIE -->
+    <div class="hd-gallery" role="region" aria-label="Galerie photos de ${h.name}">
+      <div class="g-main" style="background-image:url('${h.image}')" onclick="openGallery(0)" role="button" tabindex="0" aria-label="Photo principale de ${h.name}"></div>
+      ${h.images && h.images[1] ? `<div class="g-sub" style="background-image:url('${h.images[1]}')" onclick="openGallery(1)" role="button" tabindex="0" aria-label="Photo 2 de ${h.name}"></div>` : `<div class="g-sub" style="background:var(--gray-100);display:flex;align-items:center;justify-content:center"><iconify-icon icon="solar:buildings-bold-duotone" style="font-size:48px;color:var(--gray-300)" aria-hidden="true"></iconify-icon></div>`}
+      ${h.images && h.images[2] ? `<div class="g-sub" style="background-image:url('${h.images[2]}')" onclick="openGallery(2)" role="button" tabindex="0" aria-label="Photo 3 de ${h.name}"></div>` : `<div class="g-sub" style="background:var(--gray-100);display:flex;align-items:center;justify-content:center"><iconify-icon icon="solar:gallery-bold-duotone" style="font-size:48px;color:var(--gray-300)" aria-hidden="true"></iconify-icon></div>`}
+    </div>
+
+    <!-- EN-TÊTE -->
+    <div class="hd-header">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span style="background:${catColors[h.category] || '#475569'};color:white;font-size:11px;font-weight:700;padding:4px 12px;border-radius:10px">${h.category}</span>
+          <span style="color:var(--yellow);font-size:14px" aria-label="${h.stars} étoiles">${'★'.repeat(h.stars)}</span>
+        </div>
+        <h1 class="hd-name">${h.name}</h1>
+        <div class="hd-meta">
+          <span style="display:flex;align-items:center;gap:5px;font-size:13px;color:var(--gray-500)">
+            <iconify-icon icon="solar:map-point-bold-duotone" style="color:var(--orange)" aria-hidden="true"></iconify-icon>
+            ${h.address}
+          </span>
+          <span style="display:flex;align-items:center;gap:6px">
+            <span style="background:#0f4c3a;color:white;font-size:13px;font-weight:700;padding:3px 10px;border-radius:8px" aria-label="Note ${h.rating} sur 5">${h.rating}</span>
+            <span style="font-size:12px;color:var(--gray-400)">${h.reviews} avis voyageurs</span>
+          </span>
+          ${h.phone ? `<a href="tel:${h.phone}" style="display:flex;align-items:center;gap:5px;font-size:13px;color:var(--orange)" aria-label="Appeler l'hôtel au ${h.phone}"><iconify-icon icon="solar:phone-bold-duotone" aria-hidden="true"></iconify-icon>${h.phone}</a>` : ''}
+        </div>
+      </div>
+      <div class="hd-price-box">
+        <div class="hd-price">${h.price.toLocaleString('fr-FR')} FCFA<small>par nuit · toutes taxes incluses</small></div>
+        <button class="hd-book-btn" onclick="openModal('${h.id}')" aria-label="Réserver ${h.name} maintenant">
+          <iconify-icon icon="solar:cart-bold-duotone" aria-hidden="true"></iconify-icon>Réserver maintenant
+        </button>
+        ${h.website ? `<a href="${h.website}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:6px;color:var(--orange);font-size:12px;font-weight:600;margin-top:8px;text-decoration:none" aria-label="Visiter le site officiel de ${h.name} (s'ouvre dans un nouvel onglet)"><iconify-icon icon="solar:link-bold-duotone" aria-hidden="true"></iconify-icon>Site officiel ↗</a>` : ''}
+      </div>
+    </div>
+
+    <!-- MAPS -->
+    <div style="border-radius:12px;overflow:hidden;height:220px;margin-bottom:24px;border:1px solid var(--gray-100)" role="region" aria-label="Localisation de ${h.name} sur la carte">
+      <iframe
+        src="https://maps.google.com/maps?q=${encodeURIComponent(h.address + ', ' + h.city + ', ' + h.country)}&t=&z=14&ie=UTF8&iwloc=&output=embed"
+        width="100%" height="220" style="border:0" allowfullscreen="" loading="lazy"
+        title="Localisation de ${h.name}" aria-label="Carte Google Maps - ${h.name}">
+      </iframe>
+    </div>
+
+    <!-- ONGLETS -->
+    <div class="hd-tabs" role="tablist" aria-label="Informations sur l'hôtel">
+      <button class="hd-tab active" onclick="switchTab(this,'desc')" role="tab" aria-selected="true" aria-controls="tab-desc">Description</button>
+      <button class="hd-tab" onclick="switchTab(this,'amenities')" role="tab" aria-selected="false" aria-controls="tab-amenities">Équipements</button>
+      <button class="hd-tab" onclick="switchTab(this,'rooms')" role="tab" aria-selected="false" aria-controls="tab-rooms">Chambres & Tarifs</button>
+      <button class="hd-tab" onclick="switchTab(this,'promotions')" role="tab" aria-selected="false" aria-controls="tab-promotions">Promos & Jeux</button>
+    </div>
+
+    <!-- DESCRIPTION -->
+    <div class="tab-content active" id="tab-desc" role="tabpanel" aria-label="Description de l'hôtel">
+      <p style="font-size:15px;line-height:1.8;color:var(--gray-600);margin-bottom:20px">${h.description}</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+        <div style="background:var(--gray-50);border-radius:10px;padding:14px;text-align:center">
+          <iconify-icon icon="solar:buildings-bold-duotone" style="font-size:28px;color:var(--orange);margin-bottom:8px" aria-hidden="true"></iconify-icon>
+          <div style="font-size:13px;font-weight:700;color:var(--gray-800)">${h.stars} Étoiles</div>
+          <div style="font-size:11px;color:var(--gray-400)">Classification officielle</div>
+        </div>
+        <div style="background:var(--gray-50);border-radius:10px;padding:14px;text-align:center">
+          <iconify-icon icon="solar:star-bold-duotone" style="font-size:28px;color:var(--yellow);margin-bottom:8px" aria-hidden="true"></iconify-icon>
+          <div style="font-size:13px;font-weight:700;color:var(--gray-800)">${h.rating}/5</div>
+          <div style="font-size:11px;color:var(--gray-400)">${h.reviews} avis clients</div>
+        </div>
+        <div style="background:var(--gray-50);border-radius:10px;padding:14px;text-align:center">
+          <iconify-icon icon="solar:map-point-bold-duotone" style="font-size:28px;color:var(--orange);margin-bottom:8px" aria-hidden="true"></iconify-icon>
+          <div style="font-size:13px;font-weight:700;color:var(--gray-800)">${h.city}</div>
+          <div style="font-size:11px;color:var(--gray-400)">${h.country}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ÉQUIPEMENTS -->
+    <div class="tab-content" id="tab-amenities" role="tabpanel" aria-label="Équipements de l'hôtel" style="display:none">
+      <div class="amenities-grid" role="list">
+        ${h.amenities.map(a => `
+          <div class="am-item" role="listitem" aria-label="${a}">
+            <iconify-icon icon="${getAmIcon(a)}" aria-hidden="true"></iconify-icon>${a}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <!-- CHAMBRES -->
+    <div class="tab-content" id="tab-rooms" role="tabpanel" aria-label="Types de chambres et tarifs" style="display:none">
+      <div class="rooms-grid" role="list">
+        ${rooms.map(r => `
+          <div class="room-card" role="listitem" aria-label="${r.name}, à partir de ${r.price.toLocaleString('fr-FR')} FCFA par nuit">
+            <div>
+              <div class="room-name">${r.name}</div>
+              <div style="font-size:13px;color:var(--gray-400);margin-bottom:8px">
+                <iconify-icon icon="solar:sleeping-bold-duotone" aria-hidden="true"></iconify-icon> ${r.bed} ·
+                <iconify-icon icon="solar:eye-bold-duotone" aria-hidden="true"></iconify-icon> ${r.view}
+              </div>
+              <div class="room-feats" role="list">
+                ${r.features.map(f => `<span class="room-feat" role="listitem"><iconify-icon icon="solar:check-circle-bold-duotone" aria-hidden="true"></iconify-icon>${f}</span>`).join('')}
+              </div>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div class="room-price">${r.price.toLocaleString('fr-FR')} FCFA<small>par nuit</small></div>
+              <button class="room-book-btn" onclick="openModalWithRoom('${h.id}','${r.id}')" aria-label="Choisir ${r.name} à ${r.price.toLocaleString('fr-FR')} FCFA par nuit">
+                <iconify-icon icon="solar:cursor-bold-duotone" aria-hidden="true"></iconify-icon>Choisir
+              </button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <!-- PROMOTIONS & JEUX -->
+    <div class="tab-content" id="tab-promotions" role="tabpanel" aria-label="Promotions et jeux" style="display:none">
+      <div style="display:grid;gap:16px">
+        <div style="background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:12px;padding:22px;color:white">
+          <div style="font-size:10px;font-weight:700;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:10px;display:inline-block;margin-bottom:10px">🎉 OFFRE EXCLUSIVE</div>
+          <div style="font-size:18px;font-weight:800;margin-bottom:6px">Vol + Hôtel ${h.name}</div>
+          <div style="font-size:13px;opacity:.9;margin-bottom:14px">Économisez 15% en réservant votre vol et cet hôtel ensemble.</div>
+          <button onclick="window.location.href='flights.html'" style="background:white;color:#7c3aed;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none" aria-label="Réserver vol et hôtel ensemble">
+            <iconify-icon icon="solar:airplane-bold-duotone" aria-hidden="true"></iconify-icon> Trouver un vol
+          </button>
+        </div>
+
+        <div style="background:linear-gradient(135deg,#0f4c3a,#0d6b52);border-radius:12px;padding:22px;color:white">
+          <div style="font-size:10px;font-weight:700;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:10px;display:inline-block;margin-bottom:10px">💎 FIDÉLITÉ</div>
+          <div style="font-size:18px;font-weight:800;margin-bottom:6px">Programme Fly360 Gold</div>
+          <div style="font-size:13px;opacity:.9;margin-bottom:14px">Créez un compte et cumulez des points sur chaque réservation. 1 000 points = 5 000 FCFA de remise.</div>
+          <button onclick="window.location.href='register.html'" style="background:white;color:#0f4c3a;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none" aria-label="Rejoindre le programme de fidélité">
+            <iconify-icon icon="solar:star-bold-duotone" aria-hidden="true"></iconify-icon> Rejoindre
+          </button>
+        </div>
+
+        <div class="game-card" onclick="playGame()" role="button" tabindex="0" aria-label="Jouer pour gagner une remise" onkeydown="if(event.key==='Enter')playGame()">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-size:10px;font-weight:700;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:10px;display:inline-block;margin-bottom:10px">🎰 JEU CONCOURS</div>
+              <div class="game-title">Tentez votre chance !</div>
+              <div class="game-desc">Tournez la roue et gagnez jusqu'à 20% de remise sur cet hôtel.</div>
+            </div>
+            <div style="font-size:50px">🎡</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `
+
+  announce(`Vous consultez l'hôtel ${h.name}, ${h.stars} étoiles à ${h.city}`)
+}
+
+function backToList() {
+  document.getElementById('view-detail').style.display = 'none'
+  document.getElementById('view-list').style.display = 'block'
+  window.scrollTo(0, 0)
+  announce('Retour à la liste des hôtels')
+}
+
+function switchTab(btn, id) {
+  document.querySelectorAll('.hd-tab').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false') })
+  document.querySelectorAll('.tab-content').forEach(c => { c.classList.remove('active'); c.style.display = 'none' })
+  btn.classList.add('active')
+  btn.setAttribute('aria-selected','true')
+  const tab = document.getElementById(`tab-${id}`)
+  if (tab) { tab.classList.add('active'); tab.style.display = 'block' }
+  announce(`Onglet ${btn.textContent.trim()} affiché`)
+}
+
+// ═══════════════════════════════════════════════
+// GALERIE
+// ═══════════════════════════════════════════════
+function openGallery(idx) {
+  if (!selectedHotel) return
+  const imgs = [selectedHotel.image, ...(selectedHotel.images || [])].filter(Boolean)
+  const overlay = document.createElement('div')
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:5000;display:flex;align-items:center;justify-content:center;cursor:pointer'
+  overlay.setAttribute('role','dialog')
+  overlay.setAttribute('aria-label','Galerie photos')
+  overlay.innerHTML = `
+    <button onclick="this.parentElement.remove()" style="position:absolute;top:20px;right:20px;color:white;font-size:28px;background:none;border:none;cursor:pointer" aria-label="Fermer la galerie">
+      <iconify-icon icon="solar:close-circle-bold-duotone" aria-hidden="true"></iconify-icon>
+    </button>
+    <img src="${imgs[idx] || imgs[0]}" style="max-width:90%;max-height:90vh;border-radius:12px;object-fit:contain" alt="Photo ${idx+1} de ${selectedHotel.name}">
+  `
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove() })
+  document.body.appendChild(overlay)
+}
+
+// ═══════════════════════════════════════════════
+// MODAL RÉSERVATION
+// ═══════════════════════════════════════════════
+function openModal(hotelId) {
+  selectedHotel = hotels.find(h => h.id === hotelId)
+  selectedRoom = 'classic'
+  document.getElementById('bm-room').value = 'classic'
+  goStep(1)
+
+  const today = new Date()
+  const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1)
+  document.getElementById('bm-in').value = today.toISOString().split('T')[0]
+  document.getElementById('bm-out').value = tomorrow.toISOString().split('T')[0]
+  calcHTotal()
+
+  document.getElementById('bm-hotel-preview').innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;background:var(--gray-50);border-radius:8px;padding:12px;margin-bottom:0">
+      <div style="width:60px;height:60px;border-radius:8px;background-image:url('${selectedHotel.image}');background-size:cover;background-position:center;flex-shrink:0" role="img" aria-label="Photo de ${selectedHotel.name}"></div>
+      <div>
+        <div style="font-size:15px;font-weight:700;color:var(--gray-800)">${selectedHotel.name}</div>
+        <div style="font-size:12px;color:var(--gray-400)">${selectedHotel.city}, ${selectedHotel.country} · ${'★'.repeat(selectedHotel.stars)}</div>
+      </div>
+    </div>
+  `
+
+  document.getElementById('modal-overlay').classList.add('active')
+  document.getElementById('booking-modal').classList.add('active')
+  document.body.style.overflow = 'hidden'
+  document.getElementById('bm-fname').focus()
+  announce('Fenêtre de réservation ouverte')
+}
+
+function openModalWithRoom(hotelId, roomId) {
+  selectedRoom = roomId
+  openModal(hotelId)
+  document.getElementById('bm-room').value = roomId
+  calcHTotal()
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('active')
+  document.getElementById('booking-modal').classList.remove('active')
+  document.body.style.overflow = ''
+  announce('Fenêtre de réservation fermée')
+}
+
+function goStep(step) {
+  currentStep = step
+  document.getElementById('bm-step1').style.display = step === 1 ? 'block' : 'none'
+  document.getElementById('bm-step2').style.display = step === 2 ? 'block' : 'none'
+  document.getElementById('bm-step3').style.display = step === 3 ? 'block' : 'none'
+
+  const steps = ['step1-ind','step2-ind','step3-ind']
+  const lines = ['line1','line2']
+  steps.forEach((s,i) => {
+    const el = document.getElementById(s)
+    el.className = `bm-step ${i + 1 < step ? 'done' : i + 1 === step ? 'active' : 'pending'}`
+  })
+  lines.forEach((l,i) => {
+    document.getElementById(l).className = `bm-step-line ${i + 1 < step ? 'done' : ''}`
+  })
+
+  if (step === 2) {
+    document.getElementById('bm-total2').textContent = document.getElementById('bm-total-price').textContent
+    document.getElementById('bm-recap').innerHTML = `
+      <div style="font-size:13px;font-weight:700;color:var(--gray-800);margin-bottom:8px">Récapitulatif</div>
+      <div style="font-size:13px;color:var(--gray-600)">${selectedHotel?.name || ''}</div>
+      <div style="font-size:12px;color:var(--gray-400);margin-top:3px">${document.getElementById('bm-room').options[document.getElementById('bm-room').selectedIndex].text.split(' —')[0]}</div>
+      <div style="font-size:12px;color:var(--gray-400)">${document.getElementById('bm-in').value} → ${document.getElementById('bm-out').value}</div>
+    `
+  }
+  announce(`Étape ${step} sur 3`)
+}
+
+function calcHTotal() {
+  if (!selectedHotel) return
+  const roomType = document.getElementById('bm-room').value
+  const mult = ROOM_PRICES[roomType] || 1
+  const basePrice = Math.round(selectedHotel.price * mult)
+  const inVal = document.getElementById('bm-in').value
+  const outVal = document.getElementById('bm-out').value
+  const nights = inVal && outVal ? Math.max(1, Math.round((new Date(outVal) - new Date(inVal)) / 86400000)) : 1
+  const total = basePrice * nights
+  document.getElementById('bm-total-price').textContent = `${total.toLocaleString('fr-FR')} FCFA (${nights} nuit${nights > 1 ? 's' : ''})`
+}
+
+function formatCard(input) {
+  let val = input.value.replace(/\D/g,'').substring(0,16)
+  input.value = val.replace(/(.{4})/g,'$1 ').trim()
+}
+
+function processPayment() {
+  const card = document.getElementById('bm-card').value
+  const exp  = document.getElementById('bm-exp').value
+  const cvc  = document.getElementById('bm-cvc').value
+
+  if (!card || card.replace(/\s/g,'').length < 16) {
+    alert('Veuillez entrer un numéro de carte valide (16 chiffres).')
+    document.getElementById('bm-card').focus()
+    return
+  }
+  if (!exp || !exp.includes('/')) {
+    alert('Veuillez entrer une date d\'expiration valide (MM/AA).')
+    return
+  }
+  if (!cvc || cvc.length < 3) {
+    alert('Veuillez entrer le code CVC (3 chiffres).')
+    return
+  }
+
+  const btn = document.querySelector('#bm-step2 .bm-submit')
+  btn.innerHTML = '<iconify-icon icon="solar:refresh-bold" style="animation:spin 1s linear infinite"></iconify-icon> Traitement...'
+  btn.disabled = true
+
+  setTimeout(() => {
+    const ref = '#FLY-' + Math.floor(Math.random() * 90000 + 10000)
+    document.getElementById('bm-confirm-title').textContent = 'Réservation confirmée ! 🎉'
+    document.getElementById('bm-ref-num').innerHTML = `Votre numéro de réservation est le <strong style="color:var(--orange)">${ref}</strong>. Un email de confirmation vous a été envoyé.`
+    if (selectedHotel?.website) {
+      document.getElementById('hotel-official-link').href = selectedHotel.website
+    }
+    localStorage.setItem('fly360_booking', JSON.stringify({ ref, hotel: selectedHotel?.name, total: document.getElementById('bm-total-price').textContent }))
+    goStep(3)
+    announce(`Réservation confirmée ! Numéro ${ref}`)
+  }, 2000)
+}
+
+// ═══════════════════════════════════════════════
+// QR CODE
+// ═══════════════════════════════════════════════
+function openQRModal() {
+  document.getElementById('qr-modal').classList.add('active')
+  announce('QR Code de vérification affiché. Veuillez scanner les 2 QR codes pour valider votre réservation.')
+}
+
+function closeQR() {
+  document.getElementById('qr-modal').classList.remove('active')
+}
+
+function verifyQR() {
+  const btn = document.querySelector('.qr-verify-btn')
+  btn.innerHTML = '<iconify-icon icon="solar:refresh-bold" style="animation:spin 1s linear infinite"></iconify-icon> Vérification...'
+  btn.disabled = true
+
+  setTimeout(() => {
+    closeQR()
+    closeModal()
+    showBookingSuccess()
+    announce('Double vérification QR Code réussie. Réservation définitivement validée.')
+  }, 2000)
+}
+
+function showBookingSuccess() {
+  const toast = document.createElement('div')
+  toast.setAttribute('role', 'alert')
+  toast.setAttribute('aria-live', 'assertive')
+  toast.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:flex-start;gap:14px;background:white;border-radius:14px;padding:18px 22px;max-width:400px;box-shadow:0 25px 60px rgba(0,0,0,.15);border-left:4px solid var(--green);animation:slideInRight .3s ease;font-family:inherit'
+  toast.innerHTML = `
+    <iconify-icon icon="solar:check-circle-bold-duotone" style="font-size:32px;color:var(--green);flex-shrink:0" aria-hidden="true"></iconify-icon>
+    <div>
+      <strong style="font-size:15px;font-weight:800;color:var(--gray-900);display:block;margin-bottom:3px">Réservation validée ! ✅</strong>
+      <p style="font-size:13px;color:var(--gray-500);margin-bottom:8px">QR Code double vérification réussie. Votre réservation est confirmée.</p>
+      <a href="dashboard.html" style="font-size:13px;font-weight:600;color:var(--orange);text-decoration:none" aria-label="Voir ma réservation dans le dashboard">Voir dans mon dashboard →</a>
+    </div>
+    <button onclick="this.parentElement.remove()" style="color:var(--gray-400);font-size:20px;flex-shrink:0;background:none;border:none;cursor:pointer;line-height:1" aria-label="Fermer la notification">×</button>
+  `
+  document.body.appendChild(toast)
+  setTimeout(() => toast.remove(), 8000)
+}
+
+// ═══════════════════════════════════════════════
+// JEU DE CHANCE
+// ═══════════════════════════════════════════════
+function playGame() {
+  const prizes = ['5% de remise 🎉','10% de remise 🎊','Annulation gratuite 🎁','20% de remise 🏆','Petit-déjeuner offert ☕','Surclassement gratuit ⭐']
+  const prize = prizes[Math.floor(Math.random() * prizes.length)]
+
+  const modal = document.createElement('div')
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:5000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)'
+  modal.setAttribute('role','dialog')
+  modal.setAttribute('aria-modal','true')
+  modal.setAttribute('aria-label','Jeu de chance - résultat')
+  modal.innerHTML = `
+    <div style="background:white;border-radius:20px;padding:40px;text-align:center;max-width:380px;width:90%;animation:bounceIn .5s ease">
+      <div style="font-size:60px;margin-bottom:16px" aria-hidden="true">🎰</div>
+      <h3 style="font-size:22px;font-weight:800;color:var(--gray-900);margin-bottom:8px">Félicitations !</h3>
+      <p style="font-size:14px;color:var(--gray-500);margin-bottom:20px">Vous avez gagné :</p>
+      <div style="background:linear-gradient(135deg,var(--orange),var(--orange-dark));color:white;font-size:22px;font-weight:800;padding:16px 24px;border-radius:12px;margin-bottom:24px" aria-live="polite">${prize}</div>
+      <p style="font-size:12px;color:var(--gray-400);margin-bottom:20px">Connectez-vous pour utiliser cette remise sur votre prochaine réservation.</p>
+      <div style="display:flex;gap:10px">
+        <button onclick="window.location.href='register.html'" style="flex:1;background:var(--orange);color:white;padding:12px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none" aria-label="Créer un compte pour utiliser la remise">Créer mon compte</button>
+        <button onclick="this.closest('[role=dialog]').remove()" style="flex:1;background:var(--gray-100);color:var(--gray-700);padding:12px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;border:none" aria-label="Fermer sans utiliser la remise">Plus tard</button>
+      </div>
+    </div>
+  `
+  document.body.appendChild(modal)
+  announce(`Vous avez gagné : ${prize}`)
+}
+
+// ═══════════════════════════════════════════════
+// DARK MODE & MENU
+// ═══════════════════════════════════════════════
+const darkBtn = document.getElementById('dark-toggle')
+if (localStorage.getItem('fly360-theme') === 'dark') document.body.classList.add('dark')
+darkBtn?.addEventListener('click', () => {
+  const d = document.body.classList.toggle('dark')
+  localStorage.setItem('fly360-theme', d ? 'dark' : 'light')
+  document.getElementById('dark-icon').setAttribute('icon', d ? 'solar:sun-bold-duotone' : 'solar:moon-bold-duotone')
+  announce(d ? 'Mode sombre activé' : 'Mode clair activé')
+})
+
+function toggleMenu() {
+  const menu = document.getElementById('mobile-menu')
+  const isOpen = menu.classList.toggle('open')
+  document.getElementById('burger-btn').setAttribute('aria-expanded', isOpen)
+  announce(isOpen ? 'Menu ouvert' : 'Menu fermé')
+}
+
+window.addEventListener('scroll', () => {
+  document.getElementById('header').classList.toggle('scrolled', window.scrollY > 8)
+})
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.burger') && !e.target.closest('.mobile-menu')) {
+    document.getElementById('mobile-menu').classList.remove('open')
+  }
+})
+
+// ═══════════════════════════════════════════════
+// NEWSLETTER
+// ═══════════════════════════════════════════════
+function subNews(e) {
+  e.preventDefault()
+  const btn = e.target.querySelector('button')
+  btn.innerHTML = '<iconify-icon icon="solar:check-circle-bold-duotone" aria-hidden="true"></iconify-icon> Inscrit !'
+  btn.style.background = '#22C55E'
+  setTimeout(() => { btn.innerHTML = '<iconify-icon icon="solar:arrow-right-bold" aria-hidden="true"></iconify-icon>S\'abonner'; btn.style.background = ''; e.target.reset() }, 3000)
+  announce('Inscription newsletter réussie !')
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+const style = document.createElement('style')
+style.textContent = `
+  @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  @keyframes slideInRight{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+  @keyframes bounceIn{0%{transform:scale(.3);opacity:0}50%{transform:scale(1.05)}70%{transform:scale(.9)}100%{transform:scale(1);opacity:1}}
+`
+document.head.appendChild(style)
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Lire les params URL
+  const params = new URLSearchParams(location.search)
+  if (params.get('dest')) document.getElementById('hs-dest').value = params.get('dest')
+
+  // Dates par défaut
+  const today = new Date()
+  const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1)
+  document.getElementById('hs-in').value = today.toISOString().split('T')[0]
+  document.getElementById('hs-out').value = tomorrow.toISOString().split('T')[0]
+
+  filteredHotels = [...hotels]
+  renderHotels(filteredHotels)
+
+  // Raccourcis clavier accessibilité
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closeModal()
+      closeQR()
+      document.getElementById('mobile-menu').classList.remove('open')
+    }
+    if (e.altKey && e.key === '1') { document.getElementById('main-content').focus(); announce('Navigation vers le contenu principal') }
+    if (e.altKey && e.key === 'h') { backToList(); announce('Retour à la liste des hôtels') }
+  })
+})
+</script>
+
+</body>
+</html>
+HOTELEOF
+echo "hotels.html créé : $(wc -l < /home/claude/fly360-web/hotels.html) lignes"

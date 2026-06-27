@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion — Fly360</title>
+  <link rel="icon" href="images/logo/logo.png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/shared.css">
+  <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
+  <style>
+    body { background: var(--gray-50); }
+    body.dark { background: var(--black); }
+    .auth-page { min-height: 100vh; display: flex; flex-direction: column; }
+    .auth-main {
+      flex: 1; display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - 70px);
+    }
+    /* GAUCHE — VISUEL */
+    .auth-visual {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f4c3a 100%);
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column;
+      justify-content: flex-end; padding: 48px;
+    }
+    .auth-visual-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1488085061387-422e29b40080?w=1000&q=80');
+      background-size: cover; background-position: center;
+      opacity: 0.25;
+    }
+    .auth-visual-content { position: relative; z-index: 2; }
+    .auth-logo { margin-bottom: 48px; }
+    .auth-logo img { height: 50px; filter: brightness(0) invert(1); }
+    .auth-tagline {
+      font-size: 36px; font-weight: 800; color: white;
+      line-height: 1.2; margin-bottom: 16px;
+    }
+    .auth-tagline span { color: var(--orange); }
+    .auth-desc { font-size: 15px; color: rgba(255,255,255,.7); line-height: 1.7; margin-bottom: 36px; }
+    .auth-features { display: flex; flex-direction: column; gap: 12px; }
+    .auth-feat {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 14px; color: rgba(255,255,255,.85);
+    }
+    .auth-feat-ico {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: rgba(255,255,255,.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    /* DROITE — FORMULAIRE */
+    .auth-form-side {
+      display: flex; align-items: center; justify-content: center;
+      padding: 48px 40px; background: white;
+    }
+    body.dark .auth-form-side { background: #1e293b; }
+    .auth-form-wrap { width: 100%; max-width: 420px; }
+    .auth-tabs {
+      display: flex; background: var(--gray-50);
+      border-radius: 12px; padding: 4px; margin-bottom: 32px;
+    }
+    body.dark .auth-tabs { background: #0f172a; }
+    .auth-tab {
+      flex: 1; padding: 10px; border-radius: 10px;
+      font-size: 14px; font-weight: 600; color: var(--gray-500);
+      cursor: pointer; transition: all .2s; text-align: center;
+      text-decoration: none; display: block;
+    }
+    .auth-tab.active {
+      background: white; color: var(--gray-900);
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    body.dark .auth-tab.active { background: #334155; color: white; }
+    .auth-form-title {
+      font-size: 26px; font-weight: 800; color: var(--gray-900); margin-bottom: 8px;
+    }
+    body.dark .auth-form-title { color: #f1f5f9; }
+    .auth-form-sub { font-size: 14px; color: var(--gray-500); margin-bottom: 28px; }
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .field label {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 700; color: var(--gray-600);
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+    body.dark .field label { color: #94a3b8; }
+    .field-wrap {
+      display: flex; align-items: center; gap: 0;
+      border: 1.5px solid var(--gray-200); border-radius: 10px;
+      overflow: hidden; transition: border-color .2s;
+    }
+    .field-wrap:focus-within { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(249,115,22,.08); }
+    body.dark .field-wrap { border-color: #334155; }
+    .field-ico {
+      width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: var(--gray-400); background: var(--gray-50); flex-shrink: 0;
+    }
+    body.dark .field-ico { background: #0f172a; }
+    .field-wrap input {
+      flex: 1; padding: 12px 14px 12px 0; border: none;
+      font-size: 14px; color: var(--gray-800); background: transparent;
+      outline: none;
+    }
+    body.dark .field-wrap input { color: #e2e8f0; }
+    .field-wrap input::placeholder { color: var(--gray-400); }
+    .field-action {
+      width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: var(--gray-400); cursor: pointer;
+      transition: color .2s; flex-shrink: 0;
+    }
+    .field-action:hover { color: var(--orange); }
+    .forgot-link {
+      display: block; text-align: right; font-size: 13px; font-weight: 600;
+      color: var(--orange); text-decoration: none; margin-bottom: 20px;
+    }
+    .remember-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .remember-check {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--gray-600); cursor: pointer;
+    }
+    body.dark .remember-check { color: #94a3b8; }
+    .remember-check input { accent-color: var(--orange); }
+    .submit-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; background: var(--orange); color: white;
+      padding: 14px; border-radius: 10px; font-size: 15px; font-weight: 700;
+      cursor: pointer; border: none; transition: all .2s; margin-bottom: 20px;
+    }
+    .submit-btn:hover { background: var(--orange-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(249,115,22,.3); }
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 12px; color: var(--gray-400); margin-bottom: 20px;
+    }
+    .divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--gray-200); }
+    body.dark .divider::before,body.dark .divider::after { background:#334155; }
+    .social-btns { display: flex; gap: 10px; margin-bottom: 24px; }
+    .social-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 11px; border: 1.5px solid var(--gray-200); border-radius: 10px;
+      font-size: 13px; font-weight: 600; color: var(--gray-700);
+      cursor: pointer; transition: all .2s; background: white;
+    }
+    body.dark .social-btn { background: #0f172a; border-color: #334155; color: #e2e8f0; }
+    .social-btn:hover { border-color: var(--orange); color: var(--orange); transform: translateY(-1px); }
+    .auth-switch {
+      text-align: center; font-size: 13px; color: var(--gray-500);
+    }
+    .auth-switch a { color: var(--orange); font-weight: 700; text-decoration: none; }
+    .error-msg {
+      background: var(--red-light); border: 1px solid var(--red);
+      color: var(--red-dark); font-size: 13px; padding: 10px 14px;
+      border-radius: 8px; margin-bottom: 16px; display: none;
+      align-items: center; gap: 8px;
+    }
+    .error-msg.show { display: flex; }
+    .success-msg {
+      background: var(--green-light); border: 1px solid var(--green);
+      color: var(--green-dark); font-size: 13px; padding: 10px 14px;
+      border-radius: 8px; margin-bottom: 16px; display: none;
+      align-items: center; gap: 8px;
+    }
+    .success-msg.show { display: flex; }
+    @media(max-width:768px) {
+      .auth-main { grid-template-columns: 1fr; }
+      .auth-visual { display: none; }
+      .auth-form-side { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header" id="header">
+  <div class="header-inner container">
+    <a href="index.html" class="logo"><img src="images/logo/logo.png" alt="Fly360"></a>
+    <nav class="nav">
+      <a href="index.html" class="nav-link"><iconify-icon icon="solar:home-2-bold-duotone"></iconify-icon>Accueil</a>
+      <a href="flights.html" class="nav-link"><iconify-icon icon="solar:airplane-bold-duotone"></iconify-icon>Vols</a>
+      <a href="hotels.html" class="nav-link"><iconify-icon icon="solar:buildings-bold-duotone"></iconify-icon>Hôtels</a>
+      <a href="cars.html" class="nav-link"><iconify-icon icon="solar:car-bold-duotone"></iconify-icon>Voitures</a>
+      <a href="planner.html" class="nav-link"><iconify-icon icon="solar:calendar-bold-duotone"></iconify-icon>Planificateur</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="dark-toggle"><iconify-icon icon="solar:moon-bold-duotone" id="dark-icon"></iconify-icon></button>
+      <a href="register.html" class="btn-signup"><iconify-icon icon="solar:user-plus-bold-duotone"></iconify-icon>S'inscrire</a>
+    </div>
+  </div>
+</header>
+
+<div class="auth-page">
+  <main class="auth-main">
+    <!-- GAUCHE -->
+    <div class="auth-visual">
+      <div class="auth-visual-bg"></div>
+      <div class="auth-visual-content">
+        <div class="auth-logo"><img src="images/logo/logo.png" alt="Fly360"></div>
+        <div class="auth-tagline">Bienvenue sur <span>Fly360</span></div>
+        <div class="auth-desc">La plateforme de voyage N°1 au Cameroun. Vols, hôtels et voitures au meilleur prix depuis Douala.</div>
+        <div class="auth-features">
+          <div class="auth-feat">
+            <div class="auth-feat-ico"><iconify-icon icon="solar:shield-keyhole-bold-duotone" style="color:var(--orange)"></iconify-icon></div>
+            <span>QR Code double vérification sur chaque paiement</span>
+          </div>
+          <div class="auth-feat">
+            <div class="auth-feat-ico"><iconify-icon icon="solar:map-point-bold-duotone" style="color:var(--blue)"></iconify-icon></div>
+            <span>Suivi voyageur en temps réel avec alertes</span>
+          </div>
+          <div class="auth-feat">
+            <div class="auth-feat-ico"><iconify-icon icon="solar:star-bold-duotone" style="color:var(--yellow)"></iconify-icon></div>
+            <span>Prix garanti le plus bas — remboursé sinon</span>
+          </div>
+          <div class="auth-feat">
+            <div class="auth-feat-ico"><iconify-icon icon="solar:calendar-bold-duotone" style="color:var(--green)"></iconify-icon></div>
+            <span>Planificateur intelligent — Vol + Hôtel + Voiture</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DROITE -->
+    <div class="auth-form-side">
+      <div class="auth-form-wrap">
+        <div class="auth-tabs">
+          <a href="login.html" class="auth-tab active">Se connecter</a>
+          <a href="register.html" class="auth-tab">S'inscrire</a>
+        </div>
+
+        <div class="auth-form-title">Bon retour ! 👋</div>
+        <div class="auth-form-sub">Connectez-vous pour accéder à vos réservations et votre planificateur.</div>
+
+        <div class="error-msg" id="error-msg">
+          <iconify-icon icon="solar:danger-triangle-bold-duotone" style="font-size:18px;flex-shrink:0"></iconify-icon>
+          <span id="error-text">Email ou mot de passe incorrect.</span>
+        </div>
+        <div class="success-msg" id="success-msg">
+          <iconify-icon icon="solar:check-circle-bold-duotone" style="font-size:18px;flex-shrink:0"></iconify-icon>
+          <span>Connexion réussie ! Redirection en cours...</span>
+        </div>
+
+        <form onsubmit="handleLogin(event)" novalidate>
+          <div class="field">
+            <label for="email"><iconify-icon icon="solar:letter-bold-duotone"></iconify-icon>Adresse email</label>
+            <div class="field-wrap">
+              <div class="field-ico"><iconify-icon icon="solar:letter-bold-duotone"></iconify-icon></div>
+              <input type="email" id="email" placeholder="jean@email.com" autocomplete="email" required aria-required="true">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="password"><iconify-icon icon="solar:lock-password-bold-duotone"></iconify-icon>Mot de passe</label>
+            <div class="field-wrap">
+              <div class="field-ico"><iconify-icon icon="solar:lock-password-bold-duotone"></iconify-icon></div>
+              <input type="password" id="password" placeholder="Votre mot de passe" autocomplete="current-password" required aria-required="true">
+              <button type="button" class="field-action" onclick="togglePwd('password','eye1')" aria-label="Afficher/masquer le mot de passe">
+                <iconify-icon icon="solar:eye-bold-duotone" id="eye1"></iconify-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="remember-row">
+            <label class="remember-check">
+              <input type="checkbox" id="remember"> Se souvenir de moi
+            </label>
+            <a href="#" class="forgot-link" style="margin-bottom:0" onclick="forgotPassword()">Mot de passe oublié ?</a>
+          </div>
+
+          <button type="submit" class="submit-btn" id="login-btn">
+            <iconify-icon icon="solar:login-bold-duotone"></iconify-icon>
+            Se connecter
+          </button>
+        </form>
+
+        <div class="divider">Ou continuer avec</div>
+        <div class="social-btns">
+          <button class="social-btn" onclick="socialLogin('Google')" aria-label="Connexion avec Google">
+            <iconify-icon icon="flat-color-icons:google" style="font-size:20px"></iconify-icon>Google
+          </button>
+          <button class="social-btn" onclick="socialLogin('Apple')" aria-label="Connexion avec Apple">
+            <iconify-icon icon="mdi:apple" style="font-size:20px"></iconify-icon>Apple
+          </button>
+        </div>
+
+        <div class="auth-switch">
+          Pas encore de compte ? <a href="register.html">Créer un compte gratuit →</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/app.js"></script>
+<script>
+// DARK MODE
+const darkBtn = document.getElementById('dark-toggle')
+if (localStorage.getItem('fly360-theme') === 'dark') document.body.classList.add('dark')
+darkBtn?.addEventListener('click', () => {
+  const d = document.body.classList.toggle('dark')
+  localStorage.setItem('fly360-theme', d ? 'dark' : 'light')
+  document.getElementById('dark-icon').setAttribute('icon', d ? 'solar:sun-bold-duotone' : 'solar:moon-bold-duotone')
+})
+window.addEventListener('scroll', () => document.getElementById('header').classList.toggle('scrolled', window.scrollY > 8))
+
+// TOGGLE PASSWORD
+function togglePwd(fieldId, iconId) {
+  const inp = document.getElementById(fieldId)
+  const ico = document.getElementById(iconId)
+  if (inp.type === 'password') {
+    inp.type = 'text'
+    ico.setAttribute('icon', 'solar:eye-closed-bold-duotone')
+  } else {
+    inp.type = 'password'
+    ico.setAttribute('icon', 'solar:eye-bold-duotone')
+  }
+}
+
+// LOGIN
+function handleLogin(e) {
+  e.preventDefault()
+  const email = document.getElementById('email').value.trim()
+  const password = document.getElementById('password').value
+  const btn = document.getElementById('login-btn')
+  const err = document.getElementById('error-msg')
+  const ok = document.getElementById('success-msg')
+
+  err.classList.remove('show')
+  ok.classList.remove('show')
+
+  if (!email || !password) {
+    document.getElementById('error-text').textContent = 'Veuillez remplir tous les champs.'
+    err.classList.add('show'); return
+  }
+
+  btn.innerHTML = '<iconify-icon icon="solar:refresh-bold" style="animation:spin 1s linear infinite"></iconify-icon> Connexion...'
+  btn.disabled = true
+
+  // Simulation (remplacé par API réelle avec le back-end)
+  setTimeout(() => {
+    // Accepter n'importe quel email/mdp pour la démo
+    if (email && password.length >= 6) {
+      const user = {
+        id: 'u_' + Date.now(),
+        email,
+        firstName: email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1),
+        lastName: 'Utilisateur',
+        createdAt: new Date().toISOString()
+      }
+      localStorage.setItem('fly360_user', JSON.stringify(user))
+      ok.classList.add('show')
+      setTimeout(() => { window.location.href = 'dashboard.html' }, 1200)
+    } else {
+      document.getElementById('error-text').textContent = 'Mot de passe trop court (minimum 6 caractères).'
+      err.classList.add('show')
+      btn.innerHTML = '<iconify-icon icon="solar:login-bold-duotone"></iconify-icon> Se connecter'
+      btn.disabled = false
+    }
+  }, 1500)
+}
+
+// SOCIAL LOGIN
+function socialLogin(provider) {
+  const btn = document.querySelector('.submit-btn') || document.createElement('div')
+  const user = {
+    id: 'u_' + Date.now(),
+    email: `demo@${provider.toLowerCase()}.com`,
+    firstName: 'Jean',
+    lastName: provider,
+    provider,
+    createdAt: new Date().toISOString()
+  }
+  localStorage.setItem('fly360_user', JSON.stringify(user))
+  document.getElementById('success-msg').classList.add('show')
+  setTimeout(() => { window.location.href = 'dashboard.html' }, 1200)
+}
+
+// MOT DE PASSE OUBLIÉ
+function forgotPassword() {
+  const email = document.getElementById('email').value
+  if (!email) { alert('Entrez votre email dans le champ ci-dessus d\'abord.'); return }
+  alert(`Un lien de réinitialisation a été envoyé à : ${email}\n\n(Fonctionnalité complète disponible avec le back-end)`)
+}
+
+// Rediriger si déjà connecté
+if (localStorage.getItem('fly360_user')) window.location.href = 'dashboard.html'
+
+const s = document.createElement('style')
+s.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}'
+document.head.appendChild(s)
+</script>
+</body>
+</html>
